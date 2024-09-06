@@ -7,16 +7,20 @@
 </head>
 <body>
     <h1>New Service</h1>
-    <form action="/csignup" method="POST">
+    <form action="/new_service" method="POST">
         <label>Service Name</label>
-        <input type="input" name="cemail" /><br>
+        <input type="input" name="servName" /><br>
 
         <label >Description</label>
         <textarea name="sdesc"></textarea><br>
         <label>Base Price</label>
         <input type="number" name="baseprice" /><br>
+        <label>Time Required(Approx)</label>
+        <input type="input" name="timereq" /><br>
+        <label>Service Type</label>
+        <input type="input" name="servtype" /><br>
         <button>Add</button>
-        <button>Cancel</button><br>
+        <a href="/admin"></a><button>Cancel</button><br>
     </form>
 </body>
 </html>

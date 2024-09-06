@@ -11,14 +11,14 @@
     <header>
         <span>Welcome Admin</span>
         <ul>
-            <a href="/home">Home</a>
+            <a href="/admin">Home</a>
             <a href="/search">Search</a>
             <a href="/summary">Summary</a>
             <a href="/logout">Logout</a>
         </ul>
     </header>
     <div class="services">
-        <h5>Services</h5>
+        <h2>Services</h2>
         <table>
             <tr>
                 <th>ID</th>
@@ -32,13 +32,21 @@
                 <td>678</td>
                 <td>Edit/Delete</td>
             </tr>
+            {%for i in service%}
+            <tr>
+                <td>{{i.s_id}}</td>
+                <td>{{i.sname}}</td>
+                <td>{{i.sbaseprice}}</td>
+                <td><a href="/edit">Edit</a>/<a href="/delete">Delete</a></td>
+            </tr>
+            {%endfor%}
         </table>
     </div>
-    <a href="/newService"> +New Service</a>
+    <a href="/new_service"> +New Service</a>
 
     <!--Proffessionals column-->
     <div class="services">
-        <h5>Professionals</h5>
+        <h2>Professionals</h2>
         <table>
             <tr>
                 <th>ID</th>
@@ -47,22 +55,24 @@
                 <th>Serice name</th>
                 <th>Action</th>
             </tr>
+            {%for i in prof%}
             <tr>
-                <td>1</td>
-                <td>XYZ</td>
-                <td>6</td>
-                <td>Cleaning</td>
-                <td>Edit/Delete</td>
+                <td>{{i.prof_id}}</td>
+                <td>{{i.pname}}</td>
+                <td>{{i.pexp}}</td>
+                <td>{{i.pserviceName}}</td>
+                <td><a href="/edit">Edit</a>/<a href="/delete">Delete</a></td>
             </tr>
+            {%endfor%}
         </table>
     </div>
     <!--Service Requests-->
     <div class="services">
-        <h5>Services</h5>
+        <h2>Services</h2>
         <table>
             <tr>
                 <th>ID</th>
-                <th>Assgned Professionals</th>
+                <th>Assigned Professionals</th>
                 <th>Requested Date</th>
                 <th>Status</th>
             </tr>
