@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,redirect,session
+from flask import Flask,render_template,request,redirect,session,flash,url_for
 from flask_sqlalchemy import SQLAlchemy
 #creating flask app
 app=Flask(__name__)
@@ -73,7 +73,7 @@ def login():
             if cust.cpassword==password:
                 session["username"]=cust.cemail
                 session["password"]=cust.cpassword
-                return render_template("customer.html")
+                return redirect("/customer")
             else:
                 return render_template("login.html",msg="Invalid Credentials")
         elif prof:
@@ -98,6 +98,34 @@ def admin():
         return render_template("admin.html",cust=cust,prof=prof,service=service)
     else:
         return redirect("/login")
+    
+@app.route("/customer")
+def customer():
+    #servType=Service.query.distinct(Service.pServiceType).all()
+    servType = db.session.query(Service.pServiceType).distinct().all()
+
+    print(servType)
+    return render_template("customer.html",servType=servType)
+
+@app.route("/customer_serviceType/<serviceName>")
+def customer_service(serviceName):
+    #subServices = Service.query.filter_by(pServiceType=serviceName).distinct(Service.sname).all()
+    subServices = (db.session.query(Service).filter_by(pServiceType=serviceName).group_by(Service.sname).all())
+    return render_template("customer2.html",subServices=subServices,serviceName=serviceName)
+
+@app.route("/customer_subService/<subService_title>")
+def customer_subService(subService_title):
+    print(subService_title)
+    #subServices = Service.query.filter_by(pServiceType=serviceName).distinct(Service.sname).all()
+    subServices = (db.session.query(Professionals).filter_by(pserviceName=subService_title).all())
+    if len(subServices)>0:
+        return render_template("customer3.html",subServices=subServices,subService_title=subService_title)
+    else:
+        print(subService_title)
+        backService = (db.session.query(Service).filter_by(sname=subService_title).one())
+        print(backService)
+        flash("Sorry,no "+subService_title+" pakages available at this point of time.You can try some other pakages.Sorry for the inconvinence")
+        return redirect(url_for('customer_service', serviceName=backService.pServiceType))
 
 @app.route('/customer_signUp',methods=['GET','POST'])
 def customer_signUp():
@@ -135,7 +163,7 @@ def professional_signUp():
 def new_service():
     if session["username"]=="admin":
         if request.method=="POST":
-            serviceName=request.form.get("servName")
+            serviceName=(request.form.get("servName")).strip()
             sdesc=request.form.get("sdesc")
             baseprice=request.form.get("baseprice")
             time=request.form.get("timereq")
@@ -149,6 +177,26 @@ def new_service():
     else:
         return redirect("/login")
     
+@app.route("/deleteService/<int:id>")
+def deleteService(id):
+    if session["username"]=="admin":
+        delService=Service.query.filter_by(s_id=id).first()
+        db.session.delete(delService)
+        db.session.commit()
+        return redirect("/admin")
+    else:
+        redirect("/login")
+
+@app.route("/deleteProf/<int:id>")
+def deleteProfessional(id):
+    if session["username"]=="admin":
+        delProf=Professionals.query.filter_by(prof_id=id).first()
+        db.session.delete(delProf)
+        db.session.commit()
+        return redirect("/admin")
+    else:
+        redirect("/login")
+
 @app.route("/logout")
 def logout():
     session["username"]=None

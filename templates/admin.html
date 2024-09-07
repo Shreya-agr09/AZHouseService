@@ -37,7 +37,7 @@
                 <td>{{i.s_id}}</td>
                 <td>{{i.sname}}</td>
                 <td>{{i.sbaseprice}}</td>
-                <td><a href="/edit">Edit</a>/<a href="/delete">Delete</a></td>
+                <td><a href="/edit">Edit</a>/<a href="/deleteService/{{i.s_id}}">Delete</a></td>
             </tr>
             {%endfor%}
         </table>
@@ -61,7 +61,7 @@
                 <td>{{i.pname}}</td>
                 <td>{{i.pexp}}</td>
                 <td>{{i.pserviceName}}</td>
-                <td><a href="/edit">Edit</a>/<a href="/delete">Delete</a></td>
+                <td><a href="/edit">Edit</a>/<a href="/deleteProf/{{i.prof_id}}">Delete</a></td>
             </tr>
             {%endfor%}
         </table>

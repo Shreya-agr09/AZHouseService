@@ -9,18 +9,18 @@
     <h1>New Service</h1>
     <form action="/new_service" method="POST">
         <label>Service Name</label>
-        <input type="input" name="servName" /><br>
+        <input type="input" name="servName" required/><br>
 
         <label >Description</label>
         <textarea name="sdesc"></textarea><br>
         <label>Base Price</label>
-        <input type="number" name="baseprice" /><br>
+        <input type="number" name="baseprice" required/><br>
         <label>Time Required(Approx)</label>
         <input type="input" name="timereq" /><br>
         <label>Service Type</label>
         <input type="input" name="servtype" /><br>
         <button>Add</button>
-        <a href="/admin"></a><button>Cancel</button><br>
     </form>
+    <a href="/admin"><button>Cancel</button></a><br>
 </body>
 </html>

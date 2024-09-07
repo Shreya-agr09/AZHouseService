@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer</title>
+</head>
+
+<body>
+    <header>
+        <h2>Welcome to Customer</h2>
+        <ul>
+            <li><a href="/customer">Home</a></li>
+            <li><a href="/search">Search</a></li>
+            <li><a href="/summary">Summary</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+        <a href="/profile">Profile</a>
+    </header>
+    <div class="bestPakages">
+        <h2>Best {{subService_title}} Pakages</h2>
+        <div class="pakages">
+            {%for i in subServices%}
+            <span>{{i.pname}}</span><button>Book</button>
+            {%endfor%}
+            <span>description</span><button>Book</button>
+            <span>description</span><button>Book</button>
+            <span>description</span><button>Book</button>
+            <span>description</span><button>Book</button>
+        </div>
+
+    </div>
+
+    <table>
+        <h2>Service History</h2>
+        <tr>
+            <th>ID</th>
+            <th>Service name</th>
+            <th>Professional name</th>
+            <th>Phone no</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Cleaning</td>
+            <td>ABC</td>
+            <td>97889797</td>
+            <td>Close It?</td>
+        </tr>
+
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Cleaning</td>
+            <td>ABC</td>
+            <td>97889797</td>
+            <td>Closed</td>
+        </tr>
+
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Cleaning</td>
+            <td>ABC</td>
+            <td>97889797</td>
+            <td>Requested</td>
+        </tr>
+    </table>
+</body>
+
+</html>
