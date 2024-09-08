@@ -19,7 +19,8 @@
         <a href="/profile">Profile</a>
     </header>
     <div class="today_services">
-        <h5>Today's Services</h5>
+        {%if cust_detail_today%}
+        <h2>Today's Services</h2>
         <table>
             <tr>
                 <th>ID</th>
@@ -28,19 +29,25 @@
                 <th>Location</th>
                 <th>Action</th>
             </tr>
+            {%for i in cust_detail_today%}
             <tr>
-                <td>1</td>
-                <td>XYZ</td>
+                <td>{{i.cust_id}}</td>
+                <td>{{i.cname}}</td>
                 <td>90909087</td>
-                <td>g501 oxy 89076</td>
+                <td>{{i.caddress}}</td>
                 <td>Accept/Reject</td>
             </tr>
+            {%endfor%}
         </table>
+        {%else%}
+        <h3>No Services are there to be delivered Today</h3>
+        {%endif%}
     </div>
 
     <!--Closed Services-->
     <div class="clservices">
-        <h5>Closed Services</h5>
+        <h2>Closed Services</h2>
+        {%if cust_detail_prev%}
         <table>
             <tr>
                 <th>ID</th>
@@ -50,15 +57,20 @@
                 <th>Date</th>
                 <th>Rating</th>
             </tr>
+            {%for cust,service in cust_detail_prev%}
             <tr>
-                <td>1</td>
-                <td>XYZ</td>
+                <td>{{cust.cust_id}}</td>
+                <td>{{cust.cname}}</td>
                 <td>698978909</td>
-                <td>g501 oxy 678766</td>
-                <td>09/08/21</td>
-                <td>3</td>
+                <td>{{cust.caddress}}</td>
+                <td>{{service.date_of_req}}</td>
+                <td>7</td>
             </tr>
+            {%endfor%}
         </table>
+        {%else%}
+        <h3>No previous history</h3>
+        {%endif%}
     </div>
     
 </body>

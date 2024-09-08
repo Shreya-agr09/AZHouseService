@@ -69,32 +69,29 @@
     <!--Service Requests-->
     <div class="services">
         <h2>Services</h2>
+        {%if serv_req%}
         <table>
             <tr>
                 <th>ID</th>
                 <th>Assigned Professionals</th>
+                <th>Customer Name</th>
                 <th>Requested Date</th>
                 <th>Status</th>
             </tr>
+            {%for cust,serv_r,prof in serv_req%}
             <tr>
-                <td>1</td>
-                <td>XYZ</td>
-                <td>09/78/90</td>
+                <td>{{serv_r.sr_id}}</td>
+                <td>{{prof.pname}}</td>
+                <td>{{cust.cname}}</td>
+                <td>{{serv_r.date_of_req}}</td>
                 <td>Requested</td>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>XYZ</td>
-                <td>09/78/90</td>
-                <td>Accepted</td>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>XYZ</td>
-                <td>09/78/90</td>
-                <td>Closed</td>
-            </tr>
+            {%endfor%}
+            
         </table>
+        {%else%}
+        <h3>No service Request yet</h3>
+        {%endif%}
     </div>
 </body>
 

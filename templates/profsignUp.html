@@ -21,10 +21,9 @@
         
             <select name="serviceName" value="serviceName">
                 {%for i in allServices%}
-                <option value={{i.sname}}>{{i.sname}}</option>
-                <option value="customer">Customer</option>
-                <option value="professional">Professional</option>
-            </select>
+                <option value="{{i.sname}}">{{i.sname}}</option>
+                {%endfor%}
+            </select><br>
 
 <!-- attach file here and make service as select option -->
         <label>Experience(in years)</label>

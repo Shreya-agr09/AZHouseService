@@ -51,7 +51,7 @@ class Service_request(db.Model):
     s_id=db.Column(db.Integer(),db.ForeignKey("service.s_id"),nullable=False)
     date_of_req=db.Column(db.String(),nullable=False)
     date_of_com=db.Column(db.String())
-    status=db.Column(db.String(),nullable=False)
+    status=db.Column(db.String())
     remarks=db.Column(db.String())
 
 #initializing model
@@ -75,7 +75,7 @@ def login():
             if cust.cpassword==password:
                 session["username"]=cust.cemail
                 session["password"]=cust.cpassword
-                session["id"]=cust.id
+                session["id"]=cust.cust_id
                 return redirect("/customer")
             else:
                 return render_template("login.html",msg="Invalid Credentials")
@@ -83,7 +83,8 @@ def login():
             if prof.ppassword==password:
                 session["username"]=prof.pemail
                 session["password"]=prof.ppassword
-                return render_template("professionals.html")
+                session["id"]=prof.prof_id
+                return redirect("/professional")
             else:
                 return render_template("login.html",msg="Invalid Credentials")  
         else:
@@ -98,7 +99,11 @@ def admin():
         prof=Professionals.query.all()
         cust=Customer.query.all()
         service=Service.query.all()
-        return render_template("admin.html",cust=cust,prof=prof,service=service)
+        serv_req=(db.session.query(Customer,Service_request,Professionals)
+                 .join(Service_request, Customer.cust_id == Service_request.cust_id)
+                 .join(Professionals, Professionals.prof_id == Service_request.prof_id)
+                 .join(Service, Service.s_id == Service_request.s_id).all())  
+        return render_template("admin.html",cust=cust,prof=prof,service=service,serv_req=serv_req)
     else:
         return redirect("/login")
     
@@ -106,10 +111,36 @@ def admin():
 def customer():
     #servType=Service.query.distinct(Service.pServiceType).all()
     servType = db.session.query(Service.pServiceType).distinct().all()
+    # custHistory=(db.session.query(Professionals, Service_request, Service).select_from(Service_request)
+    #              .join(Service_request, Customer.cust_id == Service_request.cust_id)
+    #              .join(Service, Service.s_id == Service_request.s_id)
+    #              .filter(Service_request.prof_id == Professionals.prof_id)  # Avoid extra join with Professionals
+    #              .filter(Customer.cust_id == session["id"])
+    #              .all()) 
+    custHistory = (db.session.query(Professionals, Service_request, Service)
+                .join(Service_request, Service_request.prof_id == Professionals.prof_id)
+                .join(Service, Service.s_id == Service_request.s_id)
+                .filter(Service_request.cust_id == session["id"])
+                .all())
+    return render_template("customer.html",servType=servType,custHistory=custHistory)
 
-    print(servType)
-    return render_template("customer.html",servType=servType)
-
+@app.route("/professional")
+def professional():
+    cust_detail_today = (db.session.query(Customer)
+                 .join(Service_request, Customer.cust_id == Service_request.cust_id)
+                 .join(Professionals, Professionals.prof_id == Service_request.prof_id)
+                 .filter(Service_request.prof_id == session["id"]).filter(Service_request.date_of_req == date.today())
+                 .all())
+    cust_detail_prev = (db.session.query(Customer,Service_request)
+                 .join(Service_request, Customer.cust_id == Service_request.cust_id)
+                 .join(Professionals, Professionals.prof_id == Service_request.prof_id)
+                 .join(Service, Service.s_id == Service_request.s_id)
+                 .filter(Service_request.prof_id == session["id"]).filter(Service_request.date_of_req != date.today())
+                 .all())    
+    return render_template("professionals.html",cust_detail_today=cust_detail_today,cust_detail_prev=cust_detail_prev)
+#create customer phone number
+#create service rating
+#create profession phone no
 @app.route("/customer_serviceType/<serviceName>")
 def customer_service(serviceName):
     #subServices = Service.query.filter_by(pServiceType=serviceName).distinct(Service.sname).all()
@@ -129,13 +160,24 @@ def customer_subService(subService_title):
     else:
         return redirect("/login")
     
-@app.route("/book_service/<prof_id>")
-def book_service(prof_id):
-    Service_request(cust_id=session["id"],prof_id=prof_id,date_of_req=date.today())
+@app.route("/book_service/<prof_id>/<subService_title>")
+def book_service(prof_id,subService_title):
+    # service_id = (db.session.query(Professionals, Service).join(Service, Professionals.pserviceName == Service.sname).filter(Professionals.pserviceName == subService_title)
+    # .first())
+    service_id = (db.session.query(Service.s_id)
+              .join(Professionals, Professionals.pserviceName == Service.sname)
+              .filter(Professionals.pserviceName == subService_title)
+              .first())
 
+    print(service_id[0])
 
+    s1=Service_request(cust_id=session["id"],prof_id=int(prof_id),s_id=service_id[0],date_of_req=date.today())
+    db.session.add(s1)
+    db.session.commit()
+    flash("Your Service has been booked successfully")
+    return redirect("/customer")
 
-@app.route('/customer_signUp',methods=['GET','POST'])
+@app.route("/customer_signUp",methods=['GET','POST'])
 def customer_signUp():
     if request.method=="POST":
         cemail=request.form.get("cemail")
