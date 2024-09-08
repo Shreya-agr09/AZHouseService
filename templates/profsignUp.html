@@ -18,7 +18,14 @@
         <input type="input" name="cname" /><br>
 
         <label>Service Name</label>
-        <input type="input" name="serviceName" /><br>
+        
+            <select name="serviceName" value="serviceName">
+                {%for i in allServices%}
+                <option value={{i.sname}}>{{i.sname}}</option>
+                <option value="customer">Customer</option>
+                <option value="professional">Professional</option>
+            </select>
+
 <!-- attach file here and make service as select option -->
         <label>Experience(in years)</label>
         <input type="input" name="exp" /><br>

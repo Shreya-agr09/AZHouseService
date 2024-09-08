@@ -1,5 +1,7 @@
 from flask import Flask,render_template,request,redirect,session,flash,url_for
 from flask_sqlalchemy import SQLAlchemy
+from datetime import date
+
 #creating flask app
 app=Flask(__name__)
 app.secret_key="7uhu987u98uiufrge5@3*(*4"
@@ -46,9 +48,9 @@ class Service_request(db.Model):
     sr_id=db.Column(db.Integer(),primary_key=True,autoincrement=True)
     cust_id=db.Column(db.Integer(),db.ForeignKey("customer.cust_id"),nullable=False)
     prof_id=db.Column(db.Integer(),db.ForeignKey("professionals.prof_id"),nullable=False)
-    ps_id_id=db.Column(db.Integer(),db.ForeignKey("service.s_id"),nullable=False)
+    s_id=db.Column(db.Integer(),db.ForeignKey("service.s_id"),nullable=False)
     date_of_req=db.Column(db.String(),nullable=False)
-    date_of_com=db.Column(db.String(),nullable=False)
+    date_of_com=db.Column(db.String())
     status=db.Column(db.String(),nullable=False)
     remarks=db.Column(db.String())
 
@@ -73,6 +75,7 @@ def login():
             if cust.cpassword==password:
                 session["username"]=cust.cemail
                 session["password"]=cust.cpassword
+                session["id"]=cust.id
                 return redirect("/customer")
             else:
                 return render_template("login.html",msg="Invalid Credentials")
@@ -115,17 +118,22 @@ def customer_service(serviceName):
 
 @app.route("/customer_subService/<subService_title>")
 def customer_subService(subService_title):
-    print(subService_title)
-    #subServices = Service.query.filter_by(pServiceType=serviceName).distinct(Service.sname).all()
-    subServices = (db.session.query(Professionals).filter_by(pserviceName=subService_title).all())
-    if len(subServices)>0:
-        return render_template("customer3.html",subServices=subServices,subService_title=subService_title)
+    if session["id"]:
+        subServices = (db.session.query(Professionals).filter_by(pserviceName=subService_title).all())
+        if len(subServices)>0:
+            return render_template("customer3.html",subServices=subServices,subService_title=subService_title)
+        else:
+            backService = (db.session.query(Service).filter_by(sname=subService_title).one())
+            flash("Sorry,no "+subService_title+" pakages available at this point of time.You can try some other pakages.Sorry for the inconvinence")
+            return redirect(url_for('customer_service', serviceName=backService.pServiceType))
     else:
-        print(subService_title)
-        backService = (db.session.query(Service).filter_by(sname=subService_title).one())
-        print(backService)
-        flash("Sorry,no "+subService_title+" pakages available at this point of time.You can try some other pakages.Sorry for the inconvinence")
-        return redirect(url_for('customer_service', serviceName=backService.pServiceType))
+        return redirect("/login")
+    
+@app.route("/book_service/<prof_id>")
+def book_service(prof_id):
+    Service_request(cust_id=session["id"],prof_id=prof_id,date_of_req=date.today())
+
+
 
 @app.route('/customer_signUp',methods=['GET','POST'])
 def customer_signUp():
@@ -157,7 +165,8 @@ def professional_signUp():
         db.session.commit()
         return redirect("/login")
     else:
-        return render_template("profsignUp.html")
+        allServices=db.session.query(Service)
+        return render_template("profsignUp.html",allServices=allServices)
 
 @app.route("/new_service",methods=["GET","POST"])
 def new_service():
