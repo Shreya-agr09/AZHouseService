@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Profile</title>
+</head>
+<style>
+    .main{
+        display:flex;
+        flex-direction: row;
+    }
+    .left{
+        width:50%;
+    }
+    .right{
+        width:50%;
+    }
+</style>
+<body>
+    <header>
+        <span>Welcome to Professional</span>
+        <ul>
+            <a href="/customer">Home</a>
+            <a href="/search">Search</a>
+            <a href="/summary">Summary</a>
+            <a href="/logout">Logout</a>
+        </ul>
+        <a href="/cust_profile">Profile</a>
+    </header>
+    <div class="main">
+    
+    <div class="left">
+        <h1>{{p.pname}}</h1>
+        <a href="/editCustProfile" type="Button">Edit Profile</a><a href="/deleteCustProfile" type="Button">Delete Profile</a>
+    </div>
+    <div class="right">
+        <h5>Username(emmail)</h5>{{c.cemail}}
+        <h5>Address</h5>{{c.caddress}}
+        <h5>PinCode</h5>{{c.cpincode}}
+        <h5>Contact Number</h5>893783998
+
+    </div>
+</div>
+</body>
+</html>

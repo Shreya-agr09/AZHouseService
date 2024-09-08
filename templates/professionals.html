@@ -16,7 +16,7 @@
             <a href="/summary">Summary</a>
             <a href="/logout">Logout</a>
         </ul>
-        <a href="/profile">Profile</a>
+        <a href="/prof_profile">Profile</a>
     </header>
     <div class="today_services">
         {%if cust_detail_today%}
@@ -29,13 +29,17 @@
                 <th>Location</th>
                 <th>Action</th>
             </tr>
-            {%for i in cust_detail_today%}
+            {%for i,ser_rq in cust_detail_today%}
             <tr>
                 <td>{{i.cust_id}}</td>
                 <td>{{i.cname}}</td>
                 <td>90909087</td>
                 <td>{{i.caddress}}</td>
-                <td>Accept/Reject</td>
+                {%if not ser_rq.status%}
+                <td><a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a href="/profRejectService">Reject</a></td>
+                {%else%}
+                <td>Approved</td>
+                {%endif%}
             </tr>
             {%endfor%}
         </table>

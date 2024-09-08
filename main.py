@@ -124,9 +124,28 @@ def customer():
                 .all())
     return render_template("customer.html",servType=servType,custHistory=custHistory)
 
+@app.route("/closeService/ser_reqId",methods=['GET','POST'])
+def closeService(ser_reqId):
+    if request.method=="POST":
+        pass
+    else:
+        return render_template("csremark.html")
+
+
+@app.route("/prof_profile")
+def prof_profile():
+    profDetails=Professionals.query.filter_by(prof_id=session["id"]).one()
+    category=Service.query.filter_by(sname=profDetails.pserviceName).one()
+    return render_template("prof_profile.html",p=profDetails,category=category)
+
+@app.route("/cust_profile")
+def cust_profile():
+    custDetails=Customer.query.filter_by(cust_id=session["id"]).one()
+    return render_template("prof_profile.html",c=custDetails)
+
 @app.route("/professional")
 def professional():
-    cust_detail_today = (db.session.query(Customer)
+    cust_detail_today = (db.session.query(Customer,Service_request)
                  .join(Service_request, Customer.cust_id == Service_request.cust_id)
                  .join(Professionals, Professionals.prof_id == Service_request.prof_id)
                  .filter(Service_request.prof_id == session["id"]).filter(Service_request.date_of_req == date.today())
@@ -141,18 +160,37 @@ def professional():
 #create customer phone number
 #create service rating
 #create profession phone no
+#service request status default requested
+@app.route("/profAcceptService/<serviceRq_id>")
+def profAcceptService(serviceRq_id):
+    s1=Service_request.query.filter_by(sr_id=serviceRq_id).one()
+    s1.status="Accepted"
+    db.session.commit()
+    return redirect("/professional")
+
 @app.route("/customer_serviceType/<serviceName>")
 def customer_service(serviceName):
     #subServices = Service.query.filter_by(pServiceType=serviceName).distinct(Service.sname).all()
     subServices = (db.session.query(Service).filter_by(pServiceType=serviceName).group_by(Service.sname).all())
-    return render_template("customer2.html",subServices=subServices,serviceName=serviceName)
+    #retieving history of customer 
+    custHistory = (db.session.query(Professionals, Service_request, Service)
+                .join(Service_request, Service_request.prof_id == Professionals.prof_id)
+                .join(Service, Service.s_id == Service_request.s_id)
+                .filter(Service_request.cust_id == session["id"])
+                .all())
+    return render_template("customer2.html",subServices=subServices,serviceName=serviceName,custHistory=custHistory)
 
 @app.route("/customer_subService/<subService_title>")
 def customer_subService(subService_title):
     if session["id"]:
         subServices = (db.session.query(Professionals).filter_by(pserviceName=subService_title).all())
+        custHistory = (db.session.query(Professionals, Service_request, Service)
+                .join(Service_request, Service_request.prof_id == Professionals.prof_id)
+                .join(Service, Service.s_id == Service_request.s_id)
+                .filter(Service_request.cust_id == session["id"])
+                .all())
         if len(subServices)>0:
-            return render_template("customer3.html",subServices=subServices,subService_title=subService_title)
+            return render_template("customer3.html",subServices=subServices,subService_title=subService_title,custHistory=custHistory)
         else:
             backService = (db.session.query(Service).filter_by(sname=subService_title).one())
             flash("Sorry,no "+subService_title+" pakages available at this point of time.You can try some other pakages.Sorry for the inconvinence")

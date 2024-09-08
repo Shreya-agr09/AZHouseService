@@ -37,8 +37,9 @@
         <!-- {%if msg%}{{msg}}{%endif%} -->
     </div>
 
+    <h2>Service History</h2>
+    {%if custHistory%}
     <table>
-        <h2>Service History</h2>
         <tr>
             <th>ID</th>
             <th>Service name</th>
@@ -46,13 +47,15 @@
             <th>Phone no</th>
             <th>Status</th>
         </tr>
+        {%for prof,ser_rq,service in custHistory%}
         <tr>
-            <td>2</td>
-            <td>Cleaning</td>
-            <td>ABC</td>
+            <td>{{ser_rq.sr_id}}</td>
+            <td>{{service.sname}}</td>
+            <td>{{prof.pname}}</td>
             <td>97889797</td>
             <td>Close It?</td>
         </tr>
+        {%endfor%}
 
         </tr>
         <tr>
@@ -72,6 +75,9 @@
             <td>Requested</td>
         </tr>
     </table>
+    {%else%}
+    <h3>No previous history is there to show</h3>
+    {%endif%}
 </body>
 
 </html>

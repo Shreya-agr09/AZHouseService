@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Profile</title>
+</head>
+<style>
+    .main{
+        display:flex;
+        flex-direction: row;
+    }
+    .left{
+        width:50%;
+    }
+    .right{
+        width:50%;
+    }
+</style>
+<body>
+    <header>
+        <span>Welcome to Professional</span>
+        <ul>
+            <a href="/professional">Home</a>
+            <a href="/search">Search</a>
+            <a href="/summary">Summary</a>
+            <a href="/logout">Logout</a>
+        </ul>
+        <a href="/prof_profile">Profile</a>
+    </header>
+    <div class="main">
+    
+    <div class="left">
+        <h1>{{p.pname}}</h1>
+        <a href="/editProfProfile" type="Button">Edit Profile</a><a href="/deleteProfProfile" type="Button">Delete Profile</a>
+    </div>
+    <div class="right">
+        <h5>Username(emmail)</h5>{{p.pemail}}
+        <h5>Service Name</h5>{{p.pserviceName}}
+        <h5>Category</h5>{{category.pServiceType}}
+        <h5>Experience</h5>{{p.pexp}}
+        <h5>Address</h5>{{p.paddress}}
+        <h5>PinCode</h5>{{p.ppincode}}
+        <h5>Contact Number</h5>893783998
+
+    </div>
+</div>
+</body>
+</html>
