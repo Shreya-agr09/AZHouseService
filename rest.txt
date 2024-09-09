@@ -3,7 +3,6 @@ things yet to do:
 Authentication
 Error handling
 professional edit 
-profile edit 
 
 professional document verification
 styling

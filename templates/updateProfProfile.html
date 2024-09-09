@@ -9,14 +9,14 @@
     <h1>Update Profile</h1>
     <form action="/updateProfProfile/{{p.prof_id}}" method="POST">
         <label>Email Id(Username)</label>
-        <input type="input" name="cemail" value="{{p.pemail}}"/><br>
+        <input type="input" name="cemail" value="{{p.pemail}}" disabled/><br>
 
         <label>Fullname</label>
         <input type="input" name="cname" vlaue="{{p.pname}}" /><br>
 
         <label>Service Name</label>
         
-            <select name="serviceName" value="serviceName">
+            <select name="serviceName" value="serviceName" disabled>
                 {%for i in allServices%}
                 <option value="{{i.sname}}">{{i.sname}}</option>
                 {%endfor%}
@@ -31,7 +31,11 @@
 
         <label>Pincode</label>
         <input type="input" name="cpincode" value="{{p.ppincode}}"/><br>
-
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>
+        {% endif %}
+        {% endwith %}
         <input type="submit" value="Update">
     </form>
 </body>

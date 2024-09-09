@@ -32,7 +32,7 @@
     
     <div class="left">
         <h1>{{p.pname}}</h1>
-        <a href="/editProfProfile" type="Button">Edit Profile</a><a href="/deleteProfProfile" type="Button">Delete Profile</a>
+        <a href="/updateProfProfile/{{p.prof_id}}" type="Button">Edit Profile</a><a href="/deleteProfProfile" type="Button">Delete Profile</a>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>

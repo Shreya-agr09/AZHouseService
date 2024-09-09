@@ -197,29 +197,43 @@ def deleteCustProfile():
     else:
         return redirect("/login")
 
-# @app.route("/updateProfProfile/<id>",methods=["GET","POST"])
+@app.route("/updateProfProfile/<id>",methods=["GET","POST"])
 def updateProfProfile(id):
     if request.method=="POST":
-        pemail=request.form.get("cemail")
-        c=Professionals.query.filter_by(pemail=pemail).all()
-        if pemail.find("@")!=-1:
-            if not len(c):
-                pname=request.form.get("cname")
-                pserviceName=request.form.get("serviceName")
-                pexp=request.form.get("exp")
-                paddress=request.form.get("caddress")
-                ppincode=request.form.get("cpincode")
-                p=Professionals.query.filter_by(prof_id=id).one()
-            else:
-                flash("Username already taken")
-                return redirect("/professional_signUp")
-        else:
-            flash("Please use valid email id")
-            return redirect("/professional_signUp")
+        up_pname=request.form.get("cname")
+        up_pexp=request.form.get("exp")
+        up_paddress=request.form.get("caddress")
+        up_ppincode=request.form.get("cpincode")
+        p=Professionals.query.filter_by(prof_id=id).one()
+        p.pname=up_pname
+        p.pexp=up_pexp
+        p.paddress=up_paddress
+        p.ppincode=up_ppincode
+        db.session.commit()
+        return redirect("/professional")
     else:
         p=Professionals.query.filter_by(prof_id=id).one()
+        print(p)
         return render_template("updateProfProfile.html",p=p)
-
+    
+@app.route("/updateCustProfile/<id>",methods=["GET","POST"])
+def updateCustProfile(id):
+    if request.method=="POST":
+        up_cname=request.form.get("cname")
+        up_cexp=request.form.get("exp")
+        up_caddress=request.form.get("caddress")
+        up_cpincode=request.form.get("cpincode")
+        p=Customer.query.filter_by(cust_id=id).one()
+        p.cname=up_cname
+        p.cexp=up_cexp
+        p.caddress=up_caddress
+        p.cpincode=up_cpincode
+        db.session.commit()
+        return redirect("/customer")
+    else:
+        c=Customer.query.filter_by(cust_id=id).one()
+        return render_template("updateCustProfile.html",c=c)
+    
 @app.route("/prof_profile")
 def prof_profile():
     if session["id"] and session["role"]=="professional":
@@ -254,6 +268,7 @@ def professional():
 #create customer phone number
 #create service rating
 #profession rating 
+#professional status
 #create profession phone no
 #service request status default requested
 #status can take : Accepted,Rejected,Requested,Closed

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer SignUp</title>
+</head>
+<body>
+    <h1>Update Profile</h1>
+    <form action="/updateCustProfile/{{c.cust_id}}" method="POST">
+        <label>Email Id(Username)</label>
+        <input type="input" name="cemail" value="{{c.cemail}}" disabled /><br>
+
+        <label>Fullname</label>
+        <input type="input" name="cname" value="{{c.cname}}"/><br>
+
+        <label >Address</label>
+        <textarea name="caddress">{{c.caddress}}</textarea><br>
+        <label>Pincode</label>
+        <input type="input" name="cpincode" value="{{c.cpincode}}" /><br>
+        <button>Update</button><br>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>
+        {% endif %}
+        {% endwith %}
+    </form>
+</body>
+</html>
