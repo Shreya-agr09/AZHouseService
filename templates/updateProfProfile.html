@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+</head>
+<body>
+    <h1>Update Profile</h1>
+    <form action="/updateProfProfile/{{p.prof_id}}" method="POST">
+        <label>Email Id(Username)</label>
+        <input type="input" name="cemail" value="{{p.pemail}}"/><br>
+
+        <label>Fullname</label>
+        <input type="input" name="cname" vlaue="{{p.pname}}" /><br>
+
+        <label>Service Name</label>
+        
+            <select name="serviceName" value="serviceName">
+                {%for i in allServices%}
+                <option value="{{i.sname}}">{{i.sname}}</option>
+                {%endfor%}
+            </select><br>
+
+<!-- attach file here and make service as select option -->
+        <label>Experience(in years)</label>
+        <input type="input" name="exp" value="{{p.pexp}}"/><br>
+
+        <label >Address</label>
+        <textarea name="caddress">{{p.paddress}}</textarea><br>
+
+        <label>Pincode</label>
+        <input type="input" name="cpincode" value="{{p.ppincode}}"/><br>
+
+        <input type="submit" value="Update">
+    </form>
+</body>
+</html>

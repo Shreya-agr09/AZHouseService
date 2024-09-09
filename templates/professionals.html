@@ -11,7 +11,7 @@
     <header>
         <span>Welcome to Professional</span>
         <ul>
-            <a href="/home">Home</a>
+            <a href="/professionals">Home</a>
             <a href="/search">Search</a>
             <a href="/summary">Summary</a>
             <a href="/logout">Logout</a>
@@ -35,10 +35,11 @@
                 <td>{{i.cname}}</td>
                 <td>90909087</td>
                 <td>{{i.caddress}}</td>
-                {%if not ser_rq.status%}
-                <td><a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a href="/profRejectService/{{ser_rq.sr_id}}">Reject</a></td>
+                {%if ser_rq.status=="Requested"%}
+                <td><a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a
+                        href="/profRejectService/{{ser_rq.sr_id}}">Reject</a></td>
                 {%else%}
-                <td>Approved</td>
+                <td>{{ser_rq.status}}</td>
                 {%endif%}
             </tr>
             {%endfor%}
@@ -50,7 +51,7 @@
 
     <!--Closed Services-->
     <div class="clservices">
-        <h2>Closed Services</h2>
+        <h2>Previous Services</h2>
         {%if cust_detail_prev%}
         <table>
             <tr>
@@ -58,7 +59,8 @@
                 <th>Name</th>
                 <th>Contact Number</th>
                 <th>Location</th>
-                <th>Date</th>
+                <th>Date of Request</th>
+                <th>Status</th>
                 <th>Rating</th>
             </tr>
             {%for cust,service in cust_detail_prev%}
@@ -68,7 +70,17 @@
                 <td>698978909</td>
                 <td>{{cust.caddress}}</td>
                 <td>{{service.date_of_req}}</td>
+                <td>
+                    {%if service.status == "Requested"%}
+                    <a href="profAcceptService/{{service.sr_id}}">Accept</a>/<a
+                        href="/profRejectService/{{service.sr_id}}">Reject</a>
+                    {%else%}
+                    {{service.status}}
+                    {%endif%}
+                </td>
+
                 <td>7</td>
+
             </tr>
             {%endfor%}
         </table>
@@ -76,7 +88,7 @@
         <h3>No previous history</h3>
         {%endif%}
     </div>
-    
+
 </body>
 
 </html>

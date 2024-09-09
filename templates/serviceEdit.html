@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Service</title>
+</head>
+<body>
+    <h1>Update Service</h1>
+    <form action="/update_service/{{s.s_id}}" method="POST">
+        <label>Service Name</label>
+        <input type="input" name="servName" value="{{s.sname}}" disabled /><br>
+
+        <label >Description</label>
+        <textarea name="sdesc">{{s.sdescription}}</textarea><br>
+        <label>Base Price</label>
+        <input type="number" name="baseprice" value="{{ s.sbaseprice }}"/><br>
+        <label>Time Required(Approx)</label>
+        <input type="input" name="timereq" value="{{s.stime_req}}"/><br>
+        <label>Service Type</label>
+        <input type="input" name="servtype" value="{{s.pServiceType}}" /><br>
+        <button>Update</button>
+    </form>
+    <a href="/admin"><button>Cancel</button></a><br>
+</body>
+</html>

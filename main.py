@@ -155,7 +155,7 @@ def closeService(ser_reqId):
         return redirect("/login")
 
 
-@app.route("/profRejectService")
+@app.route("/profRejectService/<serviceRq_id>")
 def profRejectService(serviceRq_id):
     s1=Service_request.query.filter_by(sr_id=serviceRq_id).one()
     s1.status="Rejected"
@@ -166,15 +166,19 @@ def profRejectService(serviceRq_id):
 @app.route("/deleteProfProfile")
 def deleteProfProfile():
     if session["id"] and session["role"]=="professional":
-        check = (db.session.query(Service_request, Professionals).join(Professionals, Service_request.prof_id == Professionals.prof_id).filter(Service_request.date_of_req==date.today()).filter(Service_request.status=="Accepted" or Service_request.status=="Requested").all())
+        check = (db.session.query(Service_request, Professionals).join(Professionals, Service_request.prof_id == Professionals.prof_id).filter(Service_request.status=="Accepted" or Service_request.status=="Requested").all())
         if not check:
-            p1=Professionals.query.filter_by(prof_id=session["id"])
-            db.session.delete(p1)
-            db.session.commit()
-            return redirect("/login")
+            p1 = Professionals.query.filter_by(prof_id=session["id"]).first()
+            if p1:
+                db.session.delete(p1)
+                db.session.commit()
+                return redirect("/login")
+            else:
+                flash("Professional not found.")
+                return redirect("/prof_profile")
         else:
             flash("Sorry,you cannot delete your account until all requests are either closed or rejected")
-            redirect("/prof_profile")
+            return redirect("/prof_profile")
     else:
         return redirect("/login")
     
@@ -183,16 +187,39 @@ def deleteCustProfile():
     if session["id"] and session["role"]=="customer":
         check = (db.session.query(Service_request, Customer).join(Customer, Service_request.cust_id == Customer.cust_id).filter(Service_request.status=="Accepted").all())
         if not check:
-            c1=Customer.query.filter_by(cust_id=session["id"])
+            c1=Customer.query.filter_by(cust_id=session["id"]).first()
             db.session.delete(c1)
             db.session.commit()
             return redirect("/login")
         else:
             flash("Sorry,you cannot delete your account until all requests are Closed")
-            redirect("/cust_profile")
+            return redirect("/cust_profile")
     else:
         return redirect("/login")
-    
+
+# @app.route("/updateProfProfile/<id>",methods=["GET","POST"])
+def updateProfProfile(id):
+    if request.method=="POST":
+        pemail=request.form.get("cemail")
+        c=Professionals.query.filter_by(pemail=pemail).all()
+        if pemail.find("@")!=-1:
+            if not len(c):
+                pname=request.form.get("cname")
+                pserviceName=request.form.get("serviceName")
+                pexp=request.form.get("exp")
+                paddress=request.form.get("caddress")
+                ppincode=request.form.get("cpincode")
+                p=Professionals.query.filter_by(prof_id=id).one()
+            else:
+                flash("Username already taken")
+                return redirect("/professional_signUp")
+        else:
+            flash("Please use valid email id")
+            return redirect("/professional_signUp")
+    else:
+        p=Professionals.query.filter_by(prof_id=id).one()
+        return render_template("updateProfProfile.html",p=p)
+
 @app.route("/prof_profile")
 def prof_profile():
     if session["id"] and session["role"]=="professional":
@@ -226,6 +253,7 @@ def professional():
     return render_template("professionals.html",cust_detail_today=cust_detail_today,cust_detail_prev=cust_detail_prev)
 #create customer phone number
 #create service rating
+#profession rating 
 #create profession phone no
 #service request status default requested
 #status can take : Accepted,Rejected,Requested,Closed
@@ -283,6 +311,24 @@ def book_service(prof_id,subService_title):
     else:
         return redirect("/login")
 
+@app.route("/update_service/<serviceId>",methods=["GET","POST"])
+def editService(serviceId):
+    if request.method=="POST":
+        up_sdesc=request.form.get("sdesc")
+        up_baseprice=request.form.get("baseprice")
+        up_time=request.form.get("timereq")
+        up_servtype=request.form.get("servtype")
+        s1=Service.query.filter_by(s_id=serviceId).one()
+        s1.sbaseprice=up_baseprice
+        s1.servType=up_servtype
+        s1.stime_req=up_time
+        s1.sdescription=up_sdesc
+        db.session.commit()
+        return redirect("/admin")
+    else:
+        s=Service.query.filter_by(s_id=serviceId).one()
+        return render_template("serviceEdit.html",s=s)
+    pass
 @app.route("/customer_signUp",methods=['GET','POST'])
 def customer_signUp():
     if request.method=="POST":
@@ -307,16 +353,25 @@ def customer_signUp():
 def professional_signUp():
     if request.method=="POST":
         pemail=request.form.get("cemail")
-        ppassword=request.form.get("cpassword")
-        pname=request.form.get("cname")
-        pserviceName=request.form.get("serviceName")
-        pexp=request.form.get("exp")
-        paddress=request.form.get("caddress")
-        ppincode=request.form.get("cpincode")
-        p1=Professionals(pemail=pemail,ppassword=ppassword,pname=pname,pserviceName=pserviceName,pexp=pexp,paddress=paddress,ppincode=ppincode)
-        db.session.add(p1)
-        db.session.commit()
-        return redirect("/login")
+        c=Professionals.query.filter_by(pemail=pemail).all()
+        if pemail.find("@")!=-1:
+            if not len(c):
+                ppassword=request.form.get("cpassword")
+                pname=request.form.get("cname")
+                pserviceName=request.form.get("serviceName")
+                pexp=request.form.get("exp")
+                paddress=request.form.get("caddress")
+                ppincode=request.form.get("cpincode")
+                p1=Professionals(pemail=pemail,ppassword=ppassword,pname=pname,pserviceName=pserviceName,pexp=pexp,paddress=paddress,ppincode=ppincode)
+                db.session.add(p1)
+                db.session.commit()
+                return redirect("/login")
+            else:
+                flash("Username already taken")
+                return redirect("/professional_signUp")
+        else:
+            flash("Please use valid email id")
+            return redirect("/professional_signUp")
     else:
         allServices=db.session.query(Service)
         return render_template("profsignUp.html",allServices=allServices)

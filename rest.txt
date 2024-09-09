@@ -2,13 +2,10 @@ things yet to do:
 
 Authentication
 Error handling
-service edit
 professional edit 
 profile edit 
-profile delete
 
 professional document verification
-what to do if professional rejects a service 
 styling
 update database
 how will admin manage customer
