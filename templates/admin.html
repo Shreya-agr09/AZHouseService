@@ -66,6 +66,28 @@
             {%endfor%}
         </table>
     </div>
+        <!--Customer column-->
+        <div class="customer">
+            <h2>Customers</h2>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>PinCode</th>
+                    <th>Action</th>
+                </tr>
+                {%for i in cust%}
+                <tr>
+                    <td>{{i.cust_id}}</td>
+                    <td>{{i.cname}}</td>
+                    <td>{{i.caddress}}</td>
+                    <td>{{i.cpincode}}</td>
+                    <td><a href="/deleteCust/{{i.cust_id}}">Delete</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </div>
     <!--Service Requests-->
     <div class="services">
         <h2>Services</h2>

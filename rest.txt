@@ -8,5 +8,6 @@ professional document verification
 styling
 update database
 how will admin manage customer
+what will happen if there are some services pending related to thtat customer
 search functionality
 summary functionality

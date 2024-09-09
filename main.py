@@ -1,6 +1,7 @@
 from flask import Flask,render_template,request,redirect,session,flash,url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
+from werkzeug.utils import secure_filename
 
 #creating flask app
 app=Flask(__name__)
@@ -364,6 +365,8 @@ def customer_signUp():
     else:
         return render_template("csignup.html")
     
+
+
 @app.route('/professional_signUp',methods=['GET','POST'])
 def professional_signUp():
     if request.method=="POST":
@@ -380,6 +383,7 @@ def professional_signUp():
                 p1=Professionals(pemail=pemail,ppassword=ppassword,pname=pname,pserviceName=pserviceName,pexp=pexp,paddress=paddress,ppincode=ppincode)
                 db.session.add(p1)
                 db.session.commit()
+                
                 return redirect("/login")
             else:
                 flash("Username already taken")
@@ -390,6 +394,8 @@ def professional_signUp():
     else:
         allServices=db.session.query(Service)
         return render_template("profsignUp.html",allServices=allServices)
+    
+
 
 @app.route("/new_service",methods=["GET","POST"])
 def new_service():

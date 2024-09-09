@@ -8,3 +8,4 @@
 5.What sholud be done if a professional rejects a service request
 6.What if a customer/professional register herself as admin
 7.What will happen to the pending sevices if pthe professional deleted his account 
+8.What will happen if there are some services pending related to thtat customer

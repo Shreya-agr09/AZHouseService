@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Professional SignUp</title>
 </head>
+
 <body>
     <h1>Service Professional SignUp</h1>
     <form action="/professional_signUp" method="POST">
@@ -18,18 +20,20 @@
         <input type="input" name="cname" /><br>
 
         <label>Service Name</label>
-        
-            <select name="serviceName" value="serviceName">
-                {%for i in allServices%}
-                <option value="{{i.sname}}">{{i.sname}}</option>
-                {%endfor%}
-            </select><br>
 
-<!-- attach file here and make service as select option -->
+        <select name="serviceName" value="serviceName">
+            {%for i in allServices%}
+            <option value="{{i.sname}}">{{i.sname}}</option>
+            {%endfor%}
+        </select><br>
+
+        <label>Upload Document (PDF, DOC, etc.)</label>
+        <input type="file" name="document" /><br>
+        
         <label>Experience(in years)</label>
         <input type="input" name="exp" /><br>
 
-        <label >Address</label>
+        <label>Address</label>
         <textarea name="caddress"></textarea><br>
 
         <label>Pincode</label>
@@ -46,4 +50,5 @@
         <a href="/login">Login Here</a>
     </form>
 </body>
+
 </html>
