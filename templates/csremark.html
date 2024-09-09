@@ -1,10 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Remarks</title>
+    <style>
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 2em;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .star-rating input[type="radio"]:checked~label {
+            color: #ffc107;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover~label {
+            color: #ffc107;
+        }
+    </style>
 </head>
+
 <body>
     <header>
         <span>Welcome to Customer</span>
@@ -17,23 +44,40 @@
         <a href="/profile">Profile</a>
     </header>
     <!--Main Body-->
-    <h2>Service remarks 
-        <h4>Request Id:73837xxx</h4>
-       <ul>
-        <li>Service name</li>
-        <li>DescriptiON</li>
-        <li>dd/mm/yy</li>
-        <li>Professional Id</li>
-        <li>Professional Name</li>
-        <li>COntact Number</li>
-       </ul>
-    select raiting : 1 2 3 4 5 
-    <form action="/remarks">
-        <label>Remarks (if any)</label>
-        <textarea name="remarks" id=""></textarea>
-        <button>Submit</button>
-        <button>Close</button>
-    </form>
+    <h2>Service remarks
+        {%for sr,s,p in results%}
+        <h4>Request Id:{{sr.sr_id}}</h4>
+        <ul>
+            <li>Service name : {{s.sname}}</li>
+            <li>Description : {{s.sdescription}}</li>
+            <li>Date of Request : {{sr.date_of_req}}</li>
+            <li>Professional Id : {{p.prof_id}}</li>
+            <li>Professional Name : {{p.pname}}</li>
+            <li>Contact Number : 872888278</li>
+        </ul>
+        <form action="/closeService/{{sr.sr_id}}" method="POST">
+            <label>Remarks (if any)</label>
+            <textarea name="remarks"></textarea><br>
+            <!-- raiting form -->
+            <label>Rating</label>
+            <div class="star-rating">
+                <input type="radio" name="rating" id="5-stars" value="5" />
+                <label for="5-stars" class="star">&#9733;</label>
+                <input type="radio" name="rating" id="4-stars" value="4" />
+                <label for="4-stars" class="star">&#9733;</label>
+                <input type="radio" name="rating" id="3-stars" value="3" />
+                <label for="3-stars" class="star">&#9733;</label>
+                <input type="radio" name="rating" id="2-stars" value="2" />
+                <label for="2-stars" class="star">&#9733;</label>
+                <input type="radio" name="rating" id="1-star" value="1" />
+                <label for="1-star" class="star">&#9733;</label>
+            </div>
+            <br>
+            {%endfor%}
+            <button>Submit</button>
+            <button onclick="window.history.back();">Close</button>
+        </form>
     </h2>
 </body>
+
 </html>

@@ -22,6 +22,12 @@
         <label>Pincode</label>
         <input type="input" name="cpincode" /><br>
         <button>Register</button><br>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>
+        {% endif %}
+        {% endwith %}
         <a href="/login">Login Here</a>
     </form>
 </body>

@@ -58,37 +58,53 @@ class Service_request(db.Model):
 db.create_all()
 
 #rendering all templates 
-
-@app.route('/login',methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method=='POST':
-        username=request.form.get("username")
-        password=request.form.get("password")
-        cust=Customer.query.filter_by(cemail=username).first()
-        prof=Professionals.query.filter_by(pemail=username).first()
-        # what if a person has registered as both cust and prof with same username
-        if username=="admin" and password=="123456":
-            session["username"]="admin"
-            session["password"]="123456"
-            return redirect("/admin")
-        elif cust:
-            if cust.cpassword==password:
-                session["username"]=cust.cemail
-                session["password"]=cust.cpassword
-                session["id"]=cust.cust_id
-                return redirect("/customer")
+    if request.method == 'POST':
+        username = request.form.get("username")
+        password = request.form.get("password")
+        role = request.form.get("role")
+
+        # Admin login (assuming admin credentials are hard-coded)
+        if username == "admin":
+            if password == "123456":
+                session["username"] = "admin"
+                session["password"] = "123456"
+                session["role"]="admin"
+                return redirect("/admin")
             else:
-                return render_template("login.html",msg="Invalid Credentials")
-        elif prof:
-            if prof.ppassword==password:
-                session["username"]=prof.pemail
-                session["password"]=prof.ppassword
-                session["id"]=prof.prof_id
-                return redirect("/professional")
+                return render_template("login.html", msg="Enter valid Username or Password")  
+        
+        elif role == 'customer':
+            cust = Customer.query.filter_by(cemail=username).first()
+            if cust:
+                if cust.cpassword == password:
+                    session["username"] = cust.cemail
+                    session["password"] = cust.cpassword
+                    session["id"] = cust.cust_id
+                    session["role"]="customer"
+                    return redirect("/customer")
+                else:
+                    return render_template("login.html", msg="Invalid Credentials")
             else:
-                return render_template("login.html",msg="Invalid Credentials")  
-        else:
-            return render_template("login.html",msg="Enter valid Username")       
+                return render_template("login.html", msg="Invalid Username")
+
+        elif role == 'professional':
+            prof = Professionals.query.filter_by(pemail=username).first()
+            if prof:
+                if prof.ppassword == password:
+                    session["username"] = prof.pemail
+                    session["password"] = prof.ppassword
+                    session["id"] = prof.prof_id
+                    session["role"] = "professional"
+                    return redirect("/professional")
+                else:
+                    return render_template("login.html", msg="Invalid Credentials")
+            else:
+                return render_template("login.html", msg="Invalid Username")
+                
+        else :
+            return render_template("login.html", msg="Enter valid Username or Password")       
                      
     else:
         return render_template("login.html")
@@ -109,14 +125,7 @@ def admin():
     
 @app.route("/customer")
 def customer():
-    #servType=Service.query.distinct(Service.pServiceType).all()
     servType = db.session.query(Service.pServiceType).distinct().all()
-    # custHistory=(db.session.query(Professionals, Service_request, Service).select_from(Service_request)
-    #              .join(Service_request, Customer.cust_id == Service_request.cust_id)
-    #              .join(Service, Service.s_id == Service_request.s_id)
-    #              .filter(Service_request.prof_id == Professionals.prof_id)  # Avoid extra join with Professionals
-    #              .filter(Customer.cust_id == session["id"])
-    #              .all()) 
     custHistory = (db.session.query(Professionals, Service_request, Service)
                 .join(Service_request, Service_request.prof_id == Professionals.prof_id)
                 .join(Service, Service.s_id == Service_request.s_id)
@@ -124,24 +133,82 @@ def customer():
                 .all())
     return render_template("customer.html",servType=servType,custHistory=custHistory)
 
-@app.route("/closeService/ser_reqId",methods=['GET','POST'])
+@app.route("/closeService/<ser_reqId>",methods=['GET','POST'])
 def closeService(ser_reqId):
-    if request.method=="POST":
-        pass
+    if session["role"]=="customer":
+        if request.method=="POST":
+            rating = request.form.get('rating')
+            date_of_com=date.today()
+            remarks=request.form.get('remarks')
+            s=Service_request.query.filter_by(sr_id=ser_reqId).one()
+            s.status="Closed"
+            s.remarks=remarks
+            s.date_of_com=date_of_com
+            db.session.commit()
+            return redirect("/customer")
+        else:
+            results = (db.session.query(Service_request, Service, Professionals).join(Service, Service_request.s_id == Service.s_id).join(Professionals, Service_request.prof_id == Professionals.prof_id).join(Customer,Service_request.cust_id == Customer.cust_id).filter(Service_request.sr_id==ser_reqId).all())
+            print(results)
+            dt=date.today()
+            return render_template("csremark.html",results=results,dt=dt)
     else:
-        return render_template("csremark.html")
+        return redirect("/login")
 
 
+@app.route("/profRejectService")
+def profRejectService(serviceRq_id):
+    s1=Service_request.query.filter_by(sr_id=serviceRq_id).one()
+    s1.status="Rejected"
+    db.session.commit()
+    return redirect("/professional")
+
+
+@app.route("/deleteProfProfile")
+def deleteProfProfile():
+    if session["id"] and session["role"]=="professional":
+        check = (db.session.query(Service_request, Professionals).join(Professionals, Service_request.prof_id == Professionals.prof_id).filter(Service_request.date_of_req==date.today()).filter(Service_request.status=="Accepted" or Service_request.status=="Requested").all())
+        if not check:
+            p1=Professionals.query.filter_by(prof_id=session["id"])
+            db.session.delete(p1)
+            db.session.commit()
+            return redirect("/login")
+        else:
+            flash("Sorry,you cannot delete your account until all requests are either closed or rejected")
+            redirect("/prof_profile")
+    else:
+        return redirect("/login")
+    
+@app.route("/deleteCustProfile")
+def deleteCustProfile():
+    if session["id"] and session["role"]=="customer":
+        check = (db.session.query(Service_request, Customer).join(Customer, Service_request.cust_id == Customer.cust_id).filter(Service_request.status=="Accepted").all())
+        if not check:
+            c1=Customer.query.filter_by(cust_id=session["id"])
+            db.session.delete(c1)
+            db.session.commit()
+            return redirect("/login")
+        else:
+            flash("Sorry,you cannot delete your account until all requests are Closed")
+            redirect("/cust_profile")
+    else:
+        return redirect("/login")
+    
 @app.route("/prof_profile")
 def prof_profile():
-    profDetails=Professionals.query.filter_by(prof_id=session["id"]).one()
-    category=Service.query.filter_by(sname=profDetails.pserviceName).one()
-    return render_template("prof_profile.html",p=profDetails,category=category)
+    if session["id"] and session["role"]=="professional":
+        profDetails=Professionals.query.filter_by(prof_id=session["id"]).one()
+        category=Service.query.filter_by(sname=profDetails.pserviceName).one()
+        return render_template("prof_profile.html",p=profDetails,category=category)
+    else:
+        return redirect("/login")
 
 @app.route("/cust_profile")
 def cust_profile():
-    custDetails=Customer.query.filter_by(cust_id=session["id"]).one()
-    return render_template("prof_profile.html",c=custDetails)
+    if session["id"] and session["role"]=="customer":
+        custDetails=Customer.query.filter_by(cust_id=session["id"]).one()
+        return render_template("custprofile.html",c=custDetails)
+    else:
+        return redirect("/login")
 
 @app.route("/professional")
 def professional():
@@ -161,6 +228,7 @@ def professional():
 #create service rating
 #create profession phone no
 #service request status default requested
+#status can take : Accepted,Rejected,Requested,Closed
 @app.route("/profAcceptService/<serviceRq_id>")
 def profAcceptService(serviceRq_id):
     s1=Service_request.query.filter_by(sr_id=serviceRq_id).one()
@@ -170,19 +238,21 @@ def profAcceptService(serviceRq_id):
 
 @app.route("/customer_serviceType/<serviceName>")
 def customer_service(serviceName):
-    #subServices = Service.query.filter_by(pServiceType=serviceName).distinct(Service.sname).all()
-    subServices = (db.session.query(Service).filter_by(pServiceType=serviceName).group_by(Service.sname).all())
-    #retieving history of customer 
-    custHistory = (db.session.query(Professionals, Service_request, Service)
-                .join(Service_request, Service_request.prof_id == Professionals.prof_id)
-                .join(Service, Service.s_id == Service_request.s_id)
-                .filter(Service_request.cust_id == session["id"])
-                .all())
-    return render_template("customer2.html",subServices=subServices,serviceName=serviceName,custHistory=custHistory)
+    if session["role"]=="customer":
+        subServices = (db.session.query(Service).filter_by(pServiceType=serviceName).group_by(Service.sname).all())
+        #retieving history of customer 
+        custHistory = (db.session.query(Professionals, Service_request, Service)
+                    .join(Service_request, Service_request.prof_id == Professionals.prof_id)
+                    .join(Service, Service.s_id == Service_request.s_id)
+                    .filter(Service_request.cust_id == session["id"])
+                    .all())
+        return render_template("customer2.html",subServices=subServices,serviceName=serviceName,custHistory=custHistory)
+    else:
+        return redirect("/login")
 
 @app.route("/customer_subService/<subService_title>")
 def customer_subService(subService_title):
-    if session["id"]:
+    if session["id"] and session["role"]=="customer":
         subServices = (db.session.query(Professionals).filter_by(pserviceName=subService_title).all())
         custHistory = (db.session.query(Professionals, Service_request, Service)
                 .join(Service_request, Service_request.prof_id == Professionals.prof_id)
@@ -200,33 +270,36 @@ def customer_subService(subService_title):
     
 @app.route("/book_service/<prof_id>/<subService_title>")
 def book_service(prof_id,subService_title):
-    # service_id = (db.session.query(Professionals, Service).join(Service, Professionals.pserviceName == Service.sname).filter(Professionals.pserviceName == subService_title)
-    # .first())
-    service_id = (db.session.query(Service.s_id)
-              .join(Professionals, Professionals.pserviceName == Service.sname)
-              .filter(Professionals.pserviceName == subService_title)
-              .first())
-
-    print(service_id[0])
-
-    s1=Service_request(cust_id=session["id"],prof_id=int(prof_id),s_id=service_id[0],date_of_req=date.today())
-    db.session.add(s1)
-    db.session.commit()
-    flash("Your Service has been booked successfully")
-    return redirect("/customer")
+    if session["role"]=="customer":
+        service_id = (db.session.query(Service.s_id)
+                .join(Professionals, Professionals.pserviceName == Service.sname)
+                .filter(Professionals.pserviceName == subService_title)
+                .first())
+        s1=Service_request(cust_id=session["id"],prof_id=int(prof_id),s_id=service_id[0],date_of_req=date.today(),status="Requested")
+        db.session.add(s1)
+        db.session.commit()
+        flash("Your Service has been booked successfully")
+        return redirect("/customer")
+    else:
+        return redirect("/login")
 
 @app.route("/customer_signUp",methods=['GET','POST'])
 def customer_signUp():
     if request.method=="POST":
         cemail=request.form.get("cemail")
-        cpassword=request.form.get("cpassword")
-        cname=request.form.get("cname")
-        caddress=request.form.get("caddress")
-        cpincode=request.form.get("cpincode")
-        c1=Customer(cemail=cemail,cpassword=cpassword,cname=cname,caddress=caddress,cpincode=cpincode)
-        db.session.add(c1)
-        db.session.commit()
-        return redirect("/login")
+        c=Customer.query.filter_by(cemail=cemail).all()
+        if cemail.find("@")!=-1 and not len(c):
+            cpassword=request.form.get("cpassword")
+            cname=request.form.get("cname")
+            caddress=request.form.get("caddress")
+            cpincode=request.form.get("cpincode")
+            c1=Customer(cemail=cemail,cpassword=cpassword,cname=cname,caddress=caddress,cpincode=cpincode)
+            db.session.add(c1)
+            db.session.commit()
+            return redirect("/login")
+        else:
+            flash("Please select another username")
+            return redirect("/customer_signUp")
     else:
         return render_template("csignup.html")
     
@@ -290,6 +363,8 @@ def deleteProfessional(id):
 def logout():
     session["username"]=None
     session["password"]=None
+    session["id"]=None
+    session["role"]=None
     return redirect("/login")
 
 if __name__=="__main__":

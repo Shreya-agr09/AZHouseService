@@ -16,7 +16,7 @@
             <li><a href="/summary">Summary</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
-        <a href="/profile">Profile</a>
+        <a href="/cust_profile">Profile</a>
     </header>
     <div class="bestPakages">
         <h2>Best {{subService_title}} Pakages</h2>
@@ -47,8 +47,18 @@
             <td>{{ser_rq.sr_id}}</td>
             <td>{{service.sname}}</td>
             <td>{{prof.pname}}</td>
-            <td>97889797</td>
-            <td>Close It?</td>
+            <td>{{prof.phone}}</td>
+            <td>
+                {% if ser_rq.status=="Requested" %}
+                    Requested
+                {% elif ser_rq.status == "Closed" %}
+                    Closed
+                {% elif ser_rq.status == "Rejected" %}
+                    Rejected
+                {% else %}
+                    <a href="/closeService/{{ser_rq.sr_id}}">Close It?</a>
+                {% endif %}
+            </td>
         </tr>
         {%endfor%}
 

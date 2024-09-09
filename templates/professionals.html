@@ -36,7 +36,7 @@
                 <td>90909087</td>
                 <td>{{i.caddress}}</td>
                 {%if not ser_rq.status%}
-                <td><a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a href="/profRejectService">Reject</a></td>
+                <td><a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a href="/profRejectService/{{ser_rq.sr_id}}">Reject</a></td>
                 {%else%}
                 <td>Approved</td>
                 {%endif%}

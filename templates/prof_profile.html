@@ -33,6 +33,15 @@
     <div class="left">
         <h1>{{p.pname}}</h1>
         <a href="/editProfProfile" type="Button">Edit Profile</a><a href="/deleteProfProfile" type="Button">Delete Profile</a>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     <div class="right">
         <h5>Username(emmail)</h5>{{p.pemail}}
