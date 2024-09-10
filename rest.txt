@@ -1,13 +1,9 @@
 things yet to do:
 
-Authentication
-Error handling
-professional edit 
-
+admin approve /reject/delete prof
 professional document verification
 styling
-update database
-how will admin manage customer
-what will happen if there are some services pending related to thtat customer
-search functionality
+deleting customer and professionals are giving error may be bcoz of backref
+customer search functionality
+make all id's dynamic n admin page
 summary functionality

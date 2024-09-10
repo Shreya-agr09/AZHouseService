@@ -26,12 +26,6 @@
                 <th>Base Price</th>
                 <th>Action</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>XYZ</td>
-                <td>678</td>
-                <td>Edit/Delete</td>
-            </tr>
             {%for i in service%}
             <tr>
                 <td>{{i.s_id}}</td>
@@ -61,33 +55,42 @@
                 <td>{{i.pname}}</td>
                 <td>{{i.pexp}}</td>
                 <td>{{i.pserviceName}}</td>
-                <td><a href="/edit">Edit</a>/<a href="/deleteProf/{{i.prof_id}}">Delete</a></td>
+                <td><a href="/edit">Approve</a>/<a href="/edit">Reject</a>/<a href="/deleteProf/{{i.prof_id}}">Delete</a></td>
             </tr>
             {%endfor%}
         </table>
     </div>
-        <!--Customer column-->
-        <div class="customer">
-            <h2>Customers</h2>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>PinCode</th>
-                    <th>Action</th>
-                </tr>
-                {%for i in cust%}
-                <tr>
-                    <td>{{i.cust_id}}</td>
-                    <td>{{i.cname}}</td>
-                    <td>{{i.caddress}}</td>
-                    <td>{{i.cpincode}}</td>
-                    <td><a href="/deleteCust/{{i.cust_id}}">Delete</a></td>
-                </tr>
-                {%endfor%}
-            </table>
-        </div>
+    <!--Customer column-->
+    <div class="customer">
+        <h2>Customers</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>PinCode</th>
+                <th>Action</th>
+            </tr>
+            {%for i in cust%}
+            <tr>
+                <td>{{i.cust_id}}</td>
+                <td>{{i.cname}}</td>
+                <td>{{i.caddress}}</td>
+                <td>{{i.cpincode}}</td>
+                <td><a href="/deleteCust/{{i.cust_id}}">Delete</a></td>
+            </tr>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+            {%endfor%}
+        </table>
+    </div>
     <!--Service Requests-->
     <div class="services">
         <h2>Services</h2>
@@ -109,7 +112,7 @@
                 <td>{{serv_r.status}}</td>
             </tr>
             {%endfor%}
-            
+
         </table>
         {%else%}
         <h3>No service Request yet</h3>

@@ -192,8 +192,6 @@ def professional_search():
         search_by = request.form.get('search_by')
         search_text = request.form.get('search_text')
         query = db.session.query(Service_request).filter_by(prof_id=session["id"])
-
-        # Apply search filter
         if search_by == 'Date':
             search_results = query.filter(Service_request.date_of_req.ilike(f'%{search_text}%')).all()
         elif search_by == 'Location':
@@ -216,7 +214,7 @@ def professional_search():
         return render_template('professional_search.html', search_results=search_results,search_by=search_by,search_text=search_text)
     else:
         return render_template("professional_search.html")
-    
+   
 @app.route("/customer")
 def customer():
     servType = db.session.query(Service.pServiceType).distinct().all()
@@ -259,7 +257,8 @@ def profRejectService(serviceRq_id):
 @app.route("/deleteProfProfile")
 def deleteProfProfile():
     if session["id"] and session["role"]=="professional":
-        check = (db.session.query(Service_request, Professionals).join(Professionals, Service_request.prof_id == Professionals.prof_id).filter(Service_request.status=="Accepted" or Service_request.status=="Requested").all())
+        check = (db.session.query(Service_request, Professionals).join(Professionals, Service_request.prof_id == Professionals.prof_id).filter(Service_request.status=="Accepted" or Service_request.status=="Requested").filter(Professionals.prof_id==session["id"]).all())
+        print(check)
         if not check:
             p1 = Professionals.query.filter_by(prof_id=session["id"]).first()
             if p1:
@@ -516,13 +515,34 @@ def deleteService(id):
 
 @app.route("/deleteProf/<int:id>")
 def deleteProfessional(id):
-    if session["username"]=="admin":
-        delProf=Professionals.query.filter_by(prof_id=id).first()
-        db.session.delete(delProf)
-        db.session.commit()
-        return redirect("/admin")
+    if session["role"]=="admin":
+        check = (db.session.query(Service_request, Professionals).join(Professionals, Service_request.prof_id == Professionals.prof_id).filter(Service_request.status=="Accepted" or Service_request.status=="Requested").all())
+        if not check:
+            p1 = Professionals.query.filter_by(prof_id=session["id"]).first()
+            db.session.delete(p1)
+            db.session.commit()
+            return redirect("/admin")
+            
+        else:
+            flash("Sorry,you cannot delete your account until all requests are either closed or rejected")
+            return redirect("/prof_profile")
     else:
-        redirect("/login")
+        return redirect("/login")
+
+@app.route("/deleteCust/<int:id>")
+def deleteCustomer(id):
+    if session["role"]=="admin":
+        check = (db.session.query(Service_request, Customer).join(Customer, Service_request.cust_id == Customer.cust_id).filter(Service_request.status=="Accepted").all())
+        if not check:
+            c1=Customer.query.filter_by(cust_id=session["id"]).first()
+            db.session.delete(c1)
+            db.session.commit()
+            return redirect("/admin")
+        else:
+            flash("Sorry,you cannot delete their account until all requests are Closed.Keep check manually and try later on.")
+            return redirect("/admin")
+    else:
+        return redirect("/login")
 
 @app.route("/logout")
 def logout():
