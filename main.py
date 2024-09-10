@@ -134,12 +134,9 @@ def admin():
     
 @app.route('/admin_search', methods=['GET','POST'])
 def admin_search():
-
     if request.method=="POST":
         search_by = request.form.get('search_by')
         search_text = request.form.get('search_text')
-        print(search_text,search_by)
-
         if search_by == 'service_request':
             # Search in the service request table, including multiple fields
             search_results = (db.session.query(Service_request)
@@ -189,6 +186,37 @@ def admin_search():
     else:
         return render_template("adminSearch.html")
 
+@app.route("/professional_search",methods=["GET","POST"])
+def professional_search():
+    if request.method=="POST":
+        search_by = request.form.get('search_by')
+        search_text = request.form.get('search_text')
+        query = db.session.query(Service_request).filter_by(prof_id=session["id"])
+
+        # Apply search filter
+        if search_by == 'Date':
+            search_results = query.filter(Service_request.date_of_req.ilike(f'%{search_text}%')).all()
+        elif search_by == 'Location':
+            search_results = query.join(Customer).filter(Customer.caddress.ilike(f'%{search_text}%')).all()
+        elif search_by == 'PinCode':
+            search_results = query.join(Customer).filter(Customer.cpincode.ilike(f'%{search_text}%')).all()
+        elif search_by=="Name":
+            search_results = query.join(Customer).filter(Customer.cname.ilike(f'%{search_text}%')).all()
+        elif search_by=="Email":
+            search_results = query.join(Customer).filter(Customer.cemail.ilike(f'%{search_text}%')).all()
+        elif search_by=="Rating":
+            search_results = query.filter(Service_request.srating.ilike(f'%{search_text}%')).all()
+        elif search_by=="Status":
+            search_results = query.filter(Service_request.status.ilike(f'%{search_text}%')).all()
+        elif search_by=="Phone Number":
+            search_results = query.join(Customer).filter(Customer.cphoneNo.ilike(f'%{search_text}%')).all()
+        else:
+            search_results=[]
+
+        return render_template('professional_search.html', search_results=search_results,search_by=search_by,search_text=search_text)
+    else:
+        return render_template("professional_search.html")
+    
 @app.route("/customer")
 def customer():
     servType = db.session.query(Service.pServiceType).distinct().all()
@@ -221,14 +249,12 @@ def closeService(ser_reqId):
     else:
         return redirect("/login")
 
-
 @app.route("/profRejectService/<serviceRq_id>")
 def profRejectService(serviceRq_id):
     s1=Service_request.query.filter_by(sr_id=serviceRq_id).one()
     s1.status="Rejected"
     db.session.commit()
     return redirect("/professional")
-
 
 @app.route("/deleteProfProfile")
 def deleteProfProfile():
@@ -431,8 +457,6 @@ def customer_signUp():
     else:
         return render_template("csignup.html")
     
-
-
 @app.route('/professional_signUp',methods=['GET','POST'])
 def professional_signUp():
     if request.method=="POST":
@@ -462,8 +486,6 @@ def professional_signUp():
         allServices=db.session.query(Service)
         return render_template("profsignUp.html",allServices=allServices)
     
-
-
 @app.route("/new_service",methods=["GET","POST"])
 def new_service():
     if session["username"]=="admin":

@@ -11,8 +11,8 @@
     <header>
         <span>Welcome to Professional</span>
         <ul>
-            <a href="/professionals">Home</a>
-            <a href="/search">Search</a>
+            <a href="/professional">Home</a>
+            <a href="/professional_search">Search</a>
             <a href="/summary">Summary</a>
             <a href="/logout">Logout</a>
         </ul>
@@ -79,7 +79,11 @@
                     {%endif%}
                 </td>
 
-                <td>7</td>
+                <td>{%if service.srating %}
+                    {{service.srating}}
+                    {%else%}
+                    NA
+                {%endif%}</td>
 
             </tr>
             {%endfor%}

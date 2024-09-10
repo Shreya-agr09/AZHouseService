@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Search</title>
+</head>
+
+<body>
+    <header>
+        <span>Welcome to Professional</span>
+        <ul>
+            <a href="/professional">Home</a>
+            <a href="/professional_search">Search</a>
+            <a href="/summary">Summary</a>
+            <a href="/logout">Logout</a>
+        </ul>
+        <a href="/prof_profile">Profile</a>
+    </header>
+    <form action="/professional_search" method="POST">
+        <label for="search_by">Search by:</label>
+        <select name="search_by" id="search_by">
+            <option value="Date">Date</option>
+            <option value="Pincode">PinCode</option>
+            <option value="Location">Location</option>
+            <option value="Name">Name</option>
+            <option value="Email">Email</option>
+            <option value="Rating">Rating</option>
+            <option value="Phone Number">Phone Number</option>
+            <option value="Status">Status</option>
+            <!-- Add more categories as needed -->
+
+        </select>
+
+        <label for="search_text">Search Text:</label>
+        <input type="text" id="search_text" name="search_text" placeholder="Enter search term (e.g., yyyy-mm-dd)" />
+
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- rendering search results -->
+    {%if search_by%}
+        {% if search_results %}
+        <h2>Search Results for {{search_by}} for {{search_text}}</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer Name</th>
+                    <th>Customer Email</th>
+                    <th>Contact Phone</th>
+                    <th>Location (with pin code)</th>
+                    <th>Date</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in search_results %}
+                <tr>
+                    <td>{{ result.sr_id }}</td>
+                    <td>{{ result.customer.cname }}</td>
+                    <td>{{ result.customer.cemail }}</td>
+                    <td>{{ result.customer.cphoneNo }}</td>
+                    <td>{{ result.customer.caddress }} ({{ result.customer.cpincode }})</td>
+                    <td>{{ result.date_of_req }}</td>
+                    <td>{{ result.srating }}</td>
+                    <td>{{result.status}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No search results found.</p>
+        {% endif %}
+    {%else%}
+    <h2>Nothing to show as of now please slect values </h2>
+    {%endif%}
+</body>
+
+</html>
