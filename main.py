@@ -2,6 +2,7 @@ from flask import Flask,render_template,request,redirect,session,flash,url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from werkzeug.utils import secure_filename
+from sqlalchemy import or_
 
 #creating flask app
 app=Flask(__name__)
@@ -22,6 +23,8 @@ class Customer(db.Model):
     cname=db.Column(db.String(),nullable=False)
     caddress=db.Column(db.String(),nullable=False)
     cpincode=db.Column(db.String(),nullable=False)
+    cphoneNo=db.Column(db.String(),nullable=False)
+    service_requests = db.relationship('Service_request', backref='customer')
 
 class Professionals(db.Model):
     prof_id=db.Column(db.Integer(),primary_key=True,autoincrement=True)
@@ -33,7 +36,10 @@ class Professionals(db.Model):
     pexp=db.Column(db.Integer(),nullable=False)
     pdoc=db.Column(db.PickleType())
     paddress=db.Column(db.String(),nullable=False)
+    pphoneNo=db.Column(db.String(),nullable=False)
     ppincode=db.Column(db.String(),nullable=False)
+    is_approved=db.Column(db.String(),nullable=False)
+    service_requests = db.relationship('Service_request', backref='professional')
 
 class Service(db.Model):
     s_id=db.Column(db.Integer(),primary_key=True,autoincrement=True)
@@ -44,6 +50,7 @@ class Service(db.Model):
     sbaseprice=db.Column(db.Integer())
     sdescription=db.Column(db.String(),nullable=False)
     pServiceType=db.Column(db.String(),nullable=False)
+    service_requests = db.relationship('Service_request', backref='service')
 
 class Service_request(db.Model):
     sr_id=db.Column(db.Integer(),primary_key=True,autoincrement=True)
@@ -52,6 +59,7 @@ class Service_request(db.Model):
     s_id=db.Column(db.Integer(),db.ForeignKey("service.s_id"),nullable=False)
     date_of_req=db.Column(db.String(),nullable=False)
     date_of_com=db.Column(db.String())
+    srating=db.Column(db.Integer())
     status=db.Column(db.String())
     remarks=db.Column(db.String())
 
@@ -124,6 +132,63 @@ def admin():
     else:
         return redirect("/login")
     
+@app.route('/admin_search', methods=['GET','POST'])
+def admin_search():
+
+    if request.method=="POST":
+        search_by = request.form.get('search_by')
+        search_text = request.form.get('search_text')
+        print(search_text,search_by)
+
+        if search_by == 'service_request':
+            # Search in the service request table, including multiple fields
+            search_results = (db.session.query(Service_request)
+                            .filter(or_(
+                                Service_request.status.ilike(f'%{search_text}%'),
+                                Service_request.srating.ilike(f'%{search_text}%'),
+                                Service_request.date_of_req.ilike(f'%{search_text}%')
+                            )).all())
+        elif search_by == 'customers':
+            # Search customers by name, email, or address
+            search_results = (db.session.query(Customer)
+                            .filter(or_(
+                                Customer.cname.ilike(f'%{search_text}%'),
+                                Customer.cemail.ilike(f'%{search_text}%'),
+                                Customer.caddress.ilike(f'%{search_text}%'),
+                                Customer.cemail.ilike(f'%{search_text}%'),
+                                Customer.cphoneNo.ilike(f'%{search_text}%'),
+                                Customer.cpincode.ilike(f'%{search_text}%')
+                            )).all())
+        elif search_by == 'professionals':
+            # Search professionals by name, service, or experience
+            search_results = (db.session.query(Professionals)
+                            .filter(or_(
+                                Professionals.pname.ilike(f'%{search_text}%'),
+                                Professionals.pserviceName.ilike(f'%{search_text}%'),
+                                Professionals.pexp.ilike(f'%{search_text}%'),
+                                Professionals.pemail.ilike(f'%{search_text}%'),
+                                Professionals.pphoneNo.ilike(f'%{search_text}%'),
+                                Professionals.paddress.ilike(f'%{search_text}%'),
+                                Professionals.ppincode.ilike(f'%{search_text}%'),
+                                Professionals.is_approved.ilike(f'%{search_text}%')
+                            )).all())
+        elif search_by == 'service':
+            # Search professionals by name, service, or experience
+            search_results = (db.session.query(Service)
+                            .filter(or_(
+                                Service.sname.ilike(f'%{search_text}%'),
+                                Service.stime_req.ilike(f'%{search_text}%'),
+                                Service.sbaseprice.ilike(f'%{search_text}%'),
+                                Service.sdescription.ilike(f'%{search_text}%'),
+                                Service.pServiceType.ilike(f'%{search_text}%')
+                            )).all())
+        else:
+            search_results = []
+
+        return render_template('adminSearch.html', search_results=search_results, search_by=search_by,search_text=search_text)
+    else:
+        return render_template("adminSearch.html")
+
 @app.route("/customer")
 def customer():
     servType = db.session.query(Service.pServiceType).distinct().all()
@@ -145,6 +210,7 @@ def closeService(ser_reqId):
             s.status="Closed"
             s.remarks=remarks
             s.date_of_com=date_of_com
+            s.srating=rating
             db.session.commit()
             return redirect("/customer")
         else:
@@ -201,15 +267,17 @@ def deleteCustProfile():
 @app.route("/updateProfProfile/<id>",methods=["GET","POST"])
 def updateProfProfile(id):
     if request.method=="POST":
-        up_pname=request.form.get("cname")
+        up_pname=request.form.get("name")
         up_pexp=request.form.get("exp")
-        up_paddress=request.form.get("caddress")
-        up_ppincode=request.form.get("cpincode")
+        up_paddress=request.form.get("address")
+        up_ppincode=request.form.get("pincode")
+        up_pphoneNo=request.form.get("phoneNo")
         p=Professionals.query.filter_by(prof_id=id).one()
         p.pname=up_pname
         p.pexp=up_pexp
         p.paddress=up_paddress
         p.ppincode=up_ppincode
+        p.pphoneNo=up_pphoneNo
         db.session.commit()
         return redirect("/professional")
     else:
@@ -224,11 +292,13 @@ def updateCustProfile(id):
         up_cexp=request.form.get("exp")
         up_caddress=request.form.get("caddress")
         up_cpincode=request.form.get("cpincode")
+        up_cphoneNo=request.form.get("cphoneNo")
         p=Customer.query.filter_by(cust_id=id).one()
         p.cname=up_cname
         p.cexp=up_cexp
         p.caddress=up_caddress
         p.cpincode=up_cpincode
+        p.cphoneNo=up_cphoneNo
         db.session.commit()
         return redirect("/customer")
     else:
@@ -266,12 +336,7 @@ def professional():
                  .filter(Service_request.prof_id == session["id"]).filter(Service_request.date_of_req != date.today())
                  .all())    
     return render_template("professionals.html",cust_detail_today=cust_detail_today,cust_detail_prev=cust_detail_prev)
-#create customer phone number
-#create service rating
-#profession rating 
-#professional status
-#create profession phone no
-#service request status default requested
+
 #status can take : Accepted,Rejected,Requested,Closed
 @app.route("/profAcceptService/<serviceRq_id>")
 def profAcceptService(serviceRq_id):
@@ -355,7 +420,8 @@ def customer_signUp():
             cname=request.form.get("cname")
             caddress=request.form.get("caddress")
             cpincode=request.form.get("cpincode")
-            c1=Customer(cemail=cemail,cpassword=cpassword,cname=cname,caddress=caddress,cpincode=cpincode)
+            cphoneNo=request.form.get("phoneNo")
+            c1=Customer(cemail=cemail,cpassword=cpassword,cname=cname,caddress=caddress,cpincode=cpincode,cphoneNo=cphoneNo)
             db.session.add(c1)
             db.session.commit()
             return redirect("/login")
@@ -380,7 +446,8 @@ def professional_signUp():
                 pexp=request.form.get("exp")
                 paddress=request.form.get("caddress")
                 ppincode=request.form.get("cpincode")
-                p1=Professionals(pemail=pemail,ppassword=ppassword,pname=pname,pserviceName=pserviceName,pexp=pexp,paddress=paddress,ppincode=ppincode)
+                pphoneNo=request.form.get("cphoneNo")
+                p1=Professionals(pemail=pemail,ppassword=ppassword,pname=pname,pserviceName=pserviceName,pexp=pexp,paddress=paddress,ppincode=ppincode,pphoneNo=pphoneNo,is_approved="Waiting")
                 db.session.add(p1)
                 db.session.commit()
                 

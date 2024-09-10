@@ -12,7 +12,7 @@
         <input type="input" name="cemail" value="{{p.pemail}}" disabled/><br>
 
         <label>Fullname</label>
-        <input type="input" name="cname" vlaue="{{p.pname}}" /><br>
+        <input type="input" name="name" value="{{p.pname}}" /><br>
 
         <label>Service Name</label>
         
@@ -22,15 +22,18 @@
                 {%endfor%}
             </select><br>
 
-<!-- attach file here and make service as select option -->
+<!-- attach file here  -->
         <label>Experience(in years)</label>
         <input type="input" name="exp" value="{{p.pexp}}"/><br>
 
         <label >Address</label>
-        <textarea name="caddress">{{p.paddress}}</textarea><br>
+        <textarea name="address">{{p.paddress}}</textarea><br>
 
         <label>Pincode</label>
-        <input type="input" name="cpincode" value="{{p.ppincode}}"/><br>
+        <input type="input" name="pincode" value="{{p.ppincode}}"/><br>
+
+        <label>Phone Number</label>
+        <input type="input" name="phoneNo" value="{{p.pphoneNo}}"/><br>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>

@@ -9,18 +9,20 @@
     <h1>Customer SignUp</h1>
     <form action="/customer_signUp" method="POST">
         <label>Email Id(Username)</label>
-        <input type="input" name="cemail" /><br>
+        <input type="input" name="cemail" required/><br>
 
         <label>Password</label>
-        <input type="password" name="cpassword" /><br>
+        <input type="password" name="cpassword" required/><br>
 
         <label>Fullname</label>
-        <input type="input" name="cname" /><br>
+        <input type="input" name="cname" required/><br>
 
         <label >Address</label>
-        <textarea name="caddress"></textarea><br>
+        <textarea name="caddress" required></textarea><br>
         <label>Pincode</label>
-        <input type="input" name="cpincode" /><br>
+        <input type="input" name="cpincode" required/><br>
+        <label>Phone Number</label>
+        <input type="input" name="phoneNo" required/><br>
         <button>Register</button><br>
 
         {% with messages = get_flashed_messages() %}

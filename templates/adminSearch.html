@@ -11,8 +11,8 @@
     <header>
         <span>Welcome Admin</span>
         <ul>
-            <a href="/home">Home</a>
-            <a href="/search">Search</a>
+            <a href="/admin">Home</a>
+            <a href="/admin_search">Search</a>
             <a href="/summary">Summary</a>
             <a href="/logout">Logout</a>
         </ul>
@@ -20,15 +20,126 @@
     <!--Search Functionality-->
     <div class="search">
 
-        <form action="/search" method="POST">
-            <label>Search By:</label>
-            <select name="sacategory" value="Service Request">
-                <option value="servives">Services</option>
-                <option value="customer">Customer</option>
-                <option value="professional">Professional</option>
+        <form action="/admin_search" method="POST">
+            <label for="search_by">Search by:</label>
+            <select name="search_by" id="search_by">
+                <option value="service_request">Service Request</option>
+                <option value="customers">Customers</option>
+                <option value="professionals">Professionals</option>
+                <option value="service">Service</option>
+                <!-- Add more categories as needed -->
             </select>
-            <input type="text" value="search text">
+
+            <label for="search_text">Search Text:</label>
+            <input type="text" id="search_text" name="search_text" placeholder="Enter search term (e.g., Closed)" />
+
+            <button type="submit">Search</button>
         </form>
+        {%if search_by%}
+            {%if search_results%}
+                {% if search_by == 'service_request' %}
+                <h2>Service Requests (Filtered by: {{ search_text }})</h2>
+                <table style="border-collapse: collapse;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Assigned Professional</th>
+                        <th>Customer Name</th>
+                        <th>Requested Date</th>
+                        <th>Status</th>
+                        <th>Rating</th>
+                    </tr>
+                    {% for request in search_results %}
+                    <tr>
+                        <td>{{ request.sr_id }}</td>
+                        <td>{{ request.professional.pname }}</td>
+                        <td>{{ request.customer.cname }}</td>
+                        <td>{{ request.date_of_req }}</td>
+                        <td>{{ request.status }}</td>
+                        <td>{{ request.srating}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% elif search_by == 'customers' %}
+                <h2>Customers (Filtered by: {{ search_text }})</h2>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Address</th>
+                        <th>PinCode</th>
+                    </tr>
+                    {% for customer in search_results %}
+                    <tr>
+                        <td>{{ customer.cust_id }}</td>
+                        <td>{{ customer.cname }}</td>
+                        <td>{{ customer.cemail }}</td>
+                        <td>{{customer.cphoneNo}}</td>
+                        <td>{{ customer.caddress }}</td>
+                        <td>{{customer.cpincode}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% elif search_by == 'service' %}
+                <h2>Services(Filtered by: {{ search_text }})</h2>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Time Required</th>
+                        <th>BasePrice</th>
+                    </tr>
+                    {% for service in search_results %}
+                    <tr>
+                        <td>{{ service.s_id }}</td>
+                        <td>{{ service.sname }}</td>
+                        <td>{{ service.pServiceType }}</td>
+                        <td>{{service.sdescription}}</td>
+                        <td>{{ service.stime_req}}</td>
+                        <td>{{service.sbaseprice}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% elif search_by == 'professionals' %}
+                <h2>Professionals (Filtered by: {{ search_text }})</h2>
+                <table style="border-collapse: collapse;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Service</th>
+                        <th>Experience</th>
+                        <th>Address</th>
+                        <th>PinCode</th>
+                        <th>Phone Number</th>
+                        <th>is_approved</th>
+                    </tr>
+                    {% for professional in search_results %}
+                    <tr>
+                        <td>{{ professional.prof_id }}</td>
+                        <td>{{ professional.pemail }}</td>
+                        <td>{{ professional.pname }}</td>
+                        <td>{{ professional.serviceName }}</td>
+                        <td>{{ professional.pexp }}</td>
+                        <td>{{professional.paddress}}</td>
+                        <td>{{professional.ppincode}}</td>
+                        <td>{{professional.pphoneNo}}</td>
+                        <td>{{ professional.is_approved }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
+            {%else%}
+            <h2>No Resuts found</h2>
+            {%endif%}
+
+        {%else%}
+        <h2>Nothing to show as of now kindly select to search</h2>
+        {%endif%}
+
     </div>
 </body>
 
