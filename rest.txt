@@ -1,9 +1,6 @@
 things yet to do:
 
-admin approve /reject/delete prof
 professional document verification
 styling
 deleting customer and professionals are giving error may be bcoz of backref
-customer search functionality
-make all id's dynamic n admin page
 summary functionality

@@ -11,34 +11,122 @@
     <header>
         <span>Welcome to Customer</span>
         <ul>
-            <a href="/home">Home</a>
-            <a href="/search">Search</a>
-            <a href="/summary">Summary</a>
-            <a href="/logout">Logout</a>
+            <li><a href="/customer">Home</a></li>
+            <li><a href="/customer_search">Search</a></li>
+            <li><a href="/summary">Summary</a></li>
+            <li><a href="/logout">Logout</a></li>
         </ul>
     </header>
+    
     <!--Search Functionality-->
     <div class="search">
-
-        <form action="/search" method="POST">
+        <form action="/customer_search" method="POST">
             <label>Search By:</label>
-            <select name="sacategory" value="Service Name">
-                <option value="serviveName">Service Name</option>
-                <option value="pincode">Time Required</option>
-                <option value="pincode">Category</option>
-                <option value="pincode">Location</option>
-                <option value="ratitng">Raiting</option>
+            <select name="search_by">
+                <option value="ServiceName">Service Name</option>
+                <option value="Time Required">Time Required</option>
+                <option value="Category">Category</option>
+                <option value="Professional Name">Professional Name</option>
+                <option value="Location">Location</option>
+                <option value="Pincode">Pincode</option>
+                <option value="Status">Status</option>
+                <option value="Rating">Rating</option>
+                <option value="Date Of Appointment">Date Of Appointment</option>
             </select>
-            <input type="text" value="search text">
+            <input type="text" name="search_text" placeholder="Enter search text">
+            <button type="submit">Search</button>
         </form>
     </div>
 
-    <h2>Best Saloon Packages</h2>
-    <div class="pakages">
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci rem deleniti veritatis delectus?</p>
-        <a href="/book">Book</a>
-    </div>
-
+    {% if search_by %}
+        {% if search_results %}
+            {% if search_by == "Status" or search_by == "Rating" or search_by == "Date Of Appointment" %}
+                <h2>{{ search_by }} (Filtered by: {{ search_text }})</h2>
+                <table style="border-collapse: collapse;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Assigned Professional</th>
+                        <th>Customer Name</th>
+                        <th>Requested Date</th>
+                        <th>Status</th>
+                        <th>Rating</th>
+                    </tr>
+                    {% for request in search_results %}
+                        <tr>
+                            <td>{{ request.sr_id }}</td>
+                            <td>{{ request.professional.pname }}</td>
+                            <td>{{ request.customer.cname }}</td>
+                            <td>{{ request.date_of_req }}</td>
+                            <td>{{ request.status }}</td>
+                            <td>{{ request.srating }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% elif search_by == "ServiceName" or search_by == "Time Required" or search_by == "Category" %}
+                <h2>{{ search_by }} (Filtered by: {{ search_text }})</h2>
+                <h2>Best Saloon Packages</h2>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Time Required</th>
+                        <th>Base Price</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for service in search_results %}
+                        <tr>
+                            <td>{{ service.s_id }}</td>
+                            <td>{{ service.sname }}</td>
+                            <td>{{ service.pServiceType }}</td>
+                            <td>{{ service.sdescription }}</td>
+                            <td>{{ service.stime_req }}</td>
+                            <td>{{ service.sbaseprice }}</td>
+                            <td><a href="/book">Book</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% elif search_by == "Professional Name" or search_by == "Location" or search_by == "Pincode"%}
+                {%if search_text%}
+                    <h2>{{search_by}}(Filtered by: {{ search_text }})</h2>
+                    <table style="border-collapse: collapse;">
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Service</th>
+                            <th>Experience</th>
+                            <th>Address</th>
+                            <th>Pincode</th>
+                            <th>Phone Number</th>
+                        </tr>
+                        {% for professional in search_results %}
+                            <tr>
+                                <td>{{ professional.prof_id }}</td>
+                                <td>{{ professional.pemail }}</td>
+                                <td>{{ professional.pname }}</td>
+                                <td>{{ professional.serviceName }}</td>
+                                <td>{{ professional.pexp }}</td>
+                                <td>{{ professional.paddress }}</td>
+                                <td>{{ professional.ppincode }}</td>
+                                <td>{{ professional.pphoneNo }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {%else%}
+                    <h2>Please search specifically what you are looking for </h2>
+                {%endif%}
+            {% else %}
+                <h2>Please select a category to search</h2>
+            {% endif %}
+        {% else %}
+            <h2>No results found</h2>
+        {% endif %}
+    {% else %}
+        <h2>Nothing to show as of now. Kindly select a search category.</h2>
+    {% endif %}
+    
 </body>
 
 </html>

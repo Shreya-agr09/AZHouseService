@@ -3,6 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from werkzeug.utils import secure_filename
 from sqlalchemy import or_
+from sqlalchemy import func
+import matplotlib
+matplotlib.use('Agg') 
+import matplotlib.pyplot as plt
 
 #creating flask app
 app=Flask(__name__)
@@ -186,6 +190,140 @@ def admin_search():
     else:
         return render_template("adminSearch.html")
 
+@app.route("/admin_summary")
+def admin_summary():
+    data = db.session.query(Service_request.status,func.count(Service_request.status).label('count')).group_by(Service_request.status).all()
+    service_status,service_count=[],[]
+    for status,count in data:
+        service_status.append(status)
+        service_count.append(count)
+    print(service_status,service_count)
+    plt.bar(service_status, service_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Service Requests Summary')
+    plt.ylabel('Number of Requests')
+    plt.savefig('service_requests_summary.png')
+    plt.clf()
+   
+    #making rating wise plot graph
+    #ratingdata = db.session.query(Service_request.srating,func.count(Service_request.srating).label('count')).group_by#(Service_request.srating).all()
+    ratingdata = db.session.query(Service_request.srating).all()
+    # rating,count=[],[]
+    # for id,count in ratingdata:
+    #     rating.append(id)
+    #     count.append(count)
+    pos=0
+    neg=0
+    for i in ratingdata:
+        print(i)
+        if i[0]>3:
+            pos+=1
+        else:
+            neg+=1
+    ratings=[pos/len(ratingdata),neg/len(ratingdata),100-pos/len(ratingdata)-neg/len(ratingdata)]
+
+
+    labels = ['Positive', 'Negative','Not given yet']
+    plt.pie(ratings, labels=labels, autopct='%1.1f%%', startangle=90)
+    centre_circle = plt.Circle((0, 0), 0.70, fc='white')
+    plt.gca().add_artist(centre_circle)
+    plt.title('Overall Customer Ratings')
+    
+    plt.savefig('customer_ratings_summary.png')
+    plt.clf()
+
+    #making dataewise plots
+    datedata = db.session.query(Service_request.date_of_req,func.count(Service_request.date_of_req).label('count')).group_by(Service_request.date_of_req).all()
+    date_d,prof_count=[],[]
+    for id,count in datedata:
+        date_d.append(id)
+        prof_count.append(count)
+    print(date_d,prof_count)
+    plt.bar(date_d, prof_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Professionals no. of order')
+    plt.ylabel('Number of Orders')
+    plt.xlabel('Date')
+    plt.savefig('date_analysis.png')
+    plt.clf()
+
+
+    #making professional wise graph
+    profdata = db.session.query(Professionals.pemail,func.count(Service_request.prof_id).label('count')).join(Service_request, Professionals.prof_id == Service_request.prof_id).group_by(Professionals.pemail).all()
+    prof_id,prof_count=[],[]
+    for id,count in profdata:
+        prof_id.append(id)
+        prof_count.append(int(count))
+    print(prof_id,prof_count)
+    plt.bar(prof_id, prof_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Professionals no. of order')
+    plt.ylabel('Number of Orders')
+    plt.xlabel('ID of Professional')
+    plt.savefig('prof_analysis.png')
+    plt.clf()
+
+    return "your image is saved successfully"
+
+@app.route("/custSummary")
+def custSummary():
+    cudata = db.session.query(Service_request.status,func.count(Service_request.status).label('count')).filter(Service_request.cust_id==session["id"]).group_by(Service_request.status).all()
+    service_status,service_count=[],[]
+    for status,count in cudata:
+        service_status.append(status)
+        service_count.append(count)
+    print(service_status,service_count)
+    plt.bar(service_status, service_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Service Requests Summary')
+    plt.ylabel('Number of Requests')
+    plt.savefig('cust_service_requests_summary.png')
+    plt.clf()
+
+     #making seactor wise graph
+    sectordata = db.session.query(Service_request.Service.sname,func.count(Service_request.Service.sname).label('count')).group_by(Service_request.Service.sname).filter(Service_request.cust_id==session["id"]).all()
+    sector,prof_count=[],[]
+    for id,count in sectordata:
+        sector.append(id)
+        prof_count.append(int(count))
+    print(sector,prof_count)
+    plt.bar(sector, prof_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Services')
+    plt.ylabel('Number of Orders')
+    plt.ylabel('Services')
+    plt.savefig('serv_analysis.png')
+    plt.clf()
+
+    
+    #making rating wise plot graph
+    # ratingdata = db.session.query(Service_request.srating,func.count(Service_request.srating).label('count')).group_by(Service_request.srating).all()
+    # rating,count=[],[]
+    # for id,count in ratingdata:
+    #     rating.append(id)
+    #     count.append(count)
+    # print(rating,count)
+    # plt.bar(rating, count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf','#8b78ce'])
+    # plt.title('Rating of all orders')
+    # plt.ylabel('Number of Orders')
+    # plt.xlabel('Rating')
+    # plt.savefig('rating.png')
+    # plt.clf() 
+
+    return "your image is saved successfully"
+
+@app.route("/admin_viewProfile/<role>/<id>")
+def admin_viewProfile(role,id):
+    if session["role"]=="admin":
+        if role=="Professional":
+            profDetails = Professionals.query.filter_by(prof_id=id).one()
+            return render_template("admin_viewProfile.html",role="Professional",details=profDetails)
+        elif role=="Customer":
+            custDetails = Customer.query.filter_by(cust_id=id).one()
+            return render_template("admin_viewProfile.html",role="Customer",details=custDetails)
+        elif role=="Service":
+            serviceDetails = Service.query.filter_by(s_id=id).one()
+            return render_template("admin_viewProfile.html",role="Service",details=serviceDetails)
+        else:
+            return redirect("/admin")
+    else:
+        return redirect("/login")
+
 @app.route("/professional_search",methods=["GET","POST"])
 def professional_search():
     if request.method=="POST":
@@ -214,7 +352,42 @@ def professional_search():
         return render_template('professional_search.html', search_results=search_results,search_by=search_by,search_text=search_text)
     else:
         return render_template("professional_search.html")
-   
+
+@app.route("/customer_search",methods=["GET","POST"])
+def customer_search():
+    if request.method=="POST":
+        search_by = request.form.get('search_by')
+        search_text = request.form.get('search_text')
+        
+        if search_by in ["ServiceName","Time Required","Category"]:
+            search_results = (db.session.query(Service)
+                            .filter(or_(
+                                Service.sname.ilike(f'%{search_text}%'),
+                                Service.stime_req.ilike(f'%{search_text}%'),
+                                Service.pServiceType.ilike(f'%{search_text}%')
+                            )).all())
+        elif search_by in ["Location","Pincode","Professional Name"]:
+            
+            search_results = (db.session.query(Professionals)
+                            .filter(or_(
+                                Professionals.pname.ilike(f'%{search_text}%'),
+                                Professionals.ppincode.ilike(f'%{search_text}%'),
+                                Professionals.paddress.ilike(f'%{search_text}%')
+                            )).all())
+        elif search_by in ["Status","Rating","Date Of Appointment"]:
+            search_results = (db.session.query(Service_request)
+                            .filter(or_(
+                                Service_request.status.ilike(f'%{search_text}%'),
+                                Service_request.srating.ilike(f'%{search_text}%'),
+                                Service_request.date_of_req.ilike(f'%{search_text}%')
+                            )).filter(Service_request.cust_id == session["id"]).all())
+        else:
+            search_results=[]
+
+        return render_template('custSearch.html', search_results=search_results,search_by=search_by,search_text=search_text)
+    else:
+        return render_template("custSearch.html")
+
 @app.route("/customer")
 def customer():
     servType = db.session.query(Service.pServiceType).distinct().all()

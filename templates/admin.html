@@ -13,7 +13,7 @@
         <ul>
             <a href="/admin">Home</a>
             <a href="/admin_search">Search</a>
-            <a href="/summary">Summary</a>
+            <a href="/admin_summary">Summary</a>
             <a href="/logout">Logout</a>
         </ul>
     </header>
@@ -28,7 +28,7 @@
             </tr>
             {%for i in service%}
             <tr>
-                <td>{{i.s_id}}</td>
+                <td><a href="/admin_viewProfile/Service/{{i.s_id}}">{{i.s_id}}</a></td>
                 <td>{{i.sname}}</td>
                 <td>{{i.sbaseprice}}</td>
                 <td><a href="/update_service/{{i.s_id}}">Edit</a>/<a href="/deleteService/{{i.s_id}}">Delete</a></td>
@@ -51,7 +51,7 @@
             </tr>
             {%for i in prof%}
             <tr>
-                <td>{{i.prof_id}}</td>
+                <td><a href="/admin_viewProfile/Professional/{{i.prof_id}}">{{i.prof_id}}</a></td>
                 <td>{{i.pname}}</td>
                 <td>{{i.pexp}}</td>
                 <td>{{i.pserviceName}}</td>
@@ -73,7 +73,7 @@
             </tr>
             {%for i in cust%}
             <tr>
-                <td>{{i.cust_id}}</td>
+                <td><a href="/admin_viewProfile/Customer/{{i.cust_id}}">{{i.cust_id}}</a></td>
                 <td>{{i.cname}}</td>
                 <td>{{i.caddress}}</td>
                 <td>{{i.cpincode}}</td>
