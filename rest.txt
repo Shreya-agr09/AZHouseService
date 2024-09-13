@@ -1,6 +1,13 @@
 things yet to do:
 
-professional document verification
-styling
 deleting customer and professionals are giving error may be bcoz of backref
 summary functionality
+
+show professionals on basis of rating 
+make a page in admin where all existing professionals will be listed 
+can do for blocked customer also
+can do same for profesiional rejected task
+make a dummy payment portal
+admin can block /unblock prof,cust
+admin can read all the reviews of profesisonals 
+styling

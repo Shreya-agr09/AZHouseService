@@ -9,7 +9,7 @@
 
 <body>
     <h1>Service Professional SignUp</h1>
-    <form action="/professional_signUp" method="POST">
+    <form action="/professional_signUp" method="POST" enctype="multipart/form-data">
         <label>Email Id(Username)</label>
         <input type="input" name="cemail" /><br>
 
@@ -27,8 +27,8 @@
             {%endfor%}
         </select><br>
 
-        <label>Upload Document (PDF, DOC, etc.)</label>
-        <input type="file" name="document" /><br>
+        <label>Upload Document (PDF)</label>
+        <input type="file" name="document" accept=".pdf" required/><br>
 
         <label>Experience(in years)</label>
         <input type="input" name="exp" /><br>
@@ -48,7 +48,7 @@
         {% endif %}
         {% endwith %}
 
-        <a href="/professional_signUp"><button>Register</button></a><br>
+        <button type="submit">Register</button><br>
 
         <a href="/login">Login Here</a>
     </form>

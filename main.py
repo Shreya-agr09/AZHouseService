@@ -1,9 +1,10 @@
-from flask import Flask,render_template,request,redirect,session,flash,url_for
+from flask import Flask,render_template,request,redirect,session,flash,url_for,send_file
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from werkzeug.utils import secure_filename
 from sqlalchemy import or_
 from sqlalchemy import func
+from io import BytesIO
 import matplotlib
 matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
@@ -11,6 +12,7 @@ import matplotlib.pyplot as plt
 #creating flask app
 app=Flask(__name__)
 app.secret_key="7uhu987u98uiufrge5@3*(*4"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #creating datbase called samplebd in the root directory(same folder)
 app.config['SQLALCHEMY_DATABASE_URI']="sqlite:///database.sqlite3"
 
@@ -38,7 +40,8 @@ class Professionals(db.Model):
     pname=db.Column(db.String(),nullable=False)
     pserviceName=db.Column(db.String(),nullable=False)
     pexp=db.Column(db.Integer(),nullable=False)
-    pdoc=db.Column(db.PickleType())
+    pdocData=db.Column(db.LargeBinary)
+    pdocFilename=db.Column(db.String(50))
     paddress=db.Column(db.String(),nullable=False)
     pphoneNo=db.Column(db.String(),nullable=False)
     ppincode=db.Column(db.String(),nullable=False)
@@ -105,14 +108,18 @@ def login():
         elif role == 'professional':
             prof = Professionals.query.filter_by(pemail=username).first()
             if prof:
-                if prof.ppassword == password:
-                    session["username"] = prof.pemail
-                    session["password"] = prof.ppassword
-                    session["id"] = prof.prof_id
-                    session["role"] = "professional"
-                    return redirect("/professional")
-                else:
-                    return render_template("login.html", msg="Invalid Credentials")
+                    if prof.is_approved=="Accepted":
+                        if prof.ppassword == password:
+                            session["username"] = prof.pemail
+                            session["password"] = prof.ppassword
+                            session["id"] = prof.prof_id
+                            session["role"] = "professional"
+                            return redirect("/professional")
+                        else:
+                            return render_template("login.html", msg="Invalid Credentials")
+                    else:
+                        flash("either you acc has been rejected or blocked or you deleted your account")
+                        return redirect("/login")
             else:
                 return render_template("login.html", msg="Invalid Username")
                 
@@ -125,7 +132,8 @@ def login():
 @app.route("/admin")
 def admin():
     if session["username"]=="admin":
-        prof=Professionals.query.all()
+        prof=Professionals.query.filter(or_(Professionals.is_approved == "Waiting", 
+                                              Professionals.is_approved == "Accepted")).all()
         cust=Customer.query.all()
         service=Service.query.all()
         serv_req=(db.session.query(Customer,Service_request,Professionals)
@@ -312,7 +320,8 @@ def admin_viewProfile(role,id):
     if session["role"]=="admin":
         if role=="Professional":
             profDetails = Professionals.query.filter_by(prof_id=id).one()
-            return render_template("admin_viewProfile.html",role="Professional",details=profDetails)
+            profReviews = Service_request.query.filter_by(prof_id=id).filter(Service_request.srating.isnot(None)).all()
+            return render_template("admin_viewProfile.html",role="Professional",details=profDetails,reviews=profReviews)
         elif role=="Customer":
             custDetails = Customer.query.filter_by(cust_id=id).one()
             return render_template("admin_viewProfile.html",role="Customer",details=custDetails)
@@ -353,6 +362,19 @@ def professional_search():
     else:
         return render_template("professional_search.html")
 
+@app.route("/rejectProfessional/<id>")
+def rejectProfessional(id):
+    query=Professionals.query.filter_by(prof_id=id).first()
+    query.is_approved="Rejected"
+    db.session.commit()
+    return redirect("/admin")
+@app.route("/acceptProfessional/<id>")
+def acceptProfessional(id):
+    query=Professionals.query.filter_by(prof_id=id).first()
+    query.is_approved="Accepted"
+    db.session.commit()
+    return redirect("/admin")
+
 @app.route("/customer_search",methods=["GET","POST"])
 def customer_search():
     if request.method=="POST":
@@ -373,7 +395,7 @@ def customer_search():
                                 Professionals.pname.ilike(f'%{search_text}%'),
                                 Professionals.ppincode.ilike(f'%{search_text}%'),
                                 Professionals.paddress.ilike(f'%{search_text}%')
-                            )).all())
+                            )).filter(Professionals.is_approved=="Accepted").all())
         elif search_by in ["Status","Rating","Date Of Appointment"]:
             search_results = (db.session.query(Service_request)
                             .filter(or_(
@@ -430,12 +452,15 @@ def profRejectService(serviceRq_id):
 @app.route("/deleteProfProfile")
 def deleteProfProfile():
     if session["id"] and session["role"]=="professional":
-        check = (db.session.query(Service_request, Professionals).join(Professionals, Service_request.prof_id == Professionals.prof_id).filter(Service_request.status=="Accepted" or Service_request.status=="Requested").filter(Professionals.prof_id==session["id"]).all())
+        check = (db.session.query(Service_request, Professionals).join(Professionals, Service_request.prof_id == Professionals.prof_id).filter(or_(Service_request.status == "Accepted",Service_request.status == "Requested")).filter(Professionals.prof_id==session["id"]).all())
         print(check)
         if not check:
             p1 = Professionals.query.filter_by(prof_id=session["id"]).first()
             if p1:
-                db.session.delete(p1)
+                p1.pname="user"
+                p1.pexp=-1
+                p1.pphoneNo="NA"
+                p1.is_approved="Left"
                 db.session.commit()
                 return redirect("/login")
             else:
@@ -445,6 +470,7 @@ def deleteProfProfile():
             flash("Sorry,you cannot delete your account until all requests are either closed or rejected")
             return redirect("/prof_profile")
     else:
+        flash("Please login first")
         return redirect("/login")
     
 @app.route("/deleteCustProfile")
@@ -560,7 +586,7 @@ def customer_service(serviceName):
 @app.route("/customer_subService/<subService_title>")
 def customer_subService(subService_title):
     if session["id"] and session["role"]=="customer":
-        subServices = (db.session.query(Professionals).filter_by(pserviceName=subService_title).all())
+        subServices = (db.session.query(Professionals).filter_by(pserviceName=subService_title).filter(Professionals.is_approved=="Accepted").all())
         custHistory = (db.session.query(Professionals, Service_request, Service)
                 .join(Service_request, Service_request.prof_id == Professionals.prof_id)
                 .join(Service, Service.s_id == Service_request.s_id)
@@ -580,7 +606,7 @@ def book_service(prof_id,subService_title):
     if session["role"]=="customer":
         service_id = (db.session.query(Service.s_id)
                 .join(Professionals, Professionals.pserviceName == Service.sname)
-                .filter(Professionals.pserviceName == subService_title)
+                .filter(Professionals.pserviceName == subService_title).filter(Professionals.is_approved=="Accepted")
                 .first())
         s1=Service_request(cust_id=session["id"],prof_id=int(prof_id),s_id=service_id[0],date_of_req=date.today(),status="Requested")
         db.session.add(s1)
@@ -628,6 +654,18 @@ def customer_signUp():
             return redirect("/customer_signUp")
     else:
         return render_template("csignup.html")
+
+@app.route('/view_prof_doc/<prof_id>')
+def view_prof_doc(prof_id):
+    professional = Professionals.query.get(prof_id)
+    
+    # If the professional and document exist
+    if professional and professional.pdocData:
+        return send_file(BytesIO(professional.pdocData), 
+                         mimetype='application/pdf',  # Assuming the document is a PDF
+                         download_name=professional.pdocFilename)
+    else:
+        return "Document not found", 404
     
 @app.route('/professional_signUp',methods=['GET','POST'])
 def professional_signUp():
@@ -640,10 +678,11 @@ def professional_signUp():
                 pname=request.form.get("cname")
                 pserviceName=request.form.get("serviceName")
                 pexp=request.form.get("exp")
+                file = request.files['document']
                 paddress=request.form.get("caddress")
                 ppincode=request.form.get("cpincode")
                 pphoneNo=request.form.get("cphoneNo")
-                p1=Professionals(pemail=pemail,ppassword=ppassword,pname=pname,pserviceName=pserviceName,pexp=pexp,paddress=paddress,ppincode=ppincode,pphoneNo=pphoneNo,is_approved="Waiting")
+                p1=Professionals(pemail=pemail,pdocData=file.read(),pdocFilename=file.filename,ppassword=ppassword,pname=pname,pserviceName=pserviceName,pexp=pexp,paddress=paddress,ppincode=ppincode,pphoneNo=pphoneNo,is_approved="Waiting")
                 db.session.add(p1)
                 db.session.commit()
                 
@@ -691,10 +730,13 @@ def deleteProfessional(id):
     if session["role"]=="admin":
         check = (db.session.query(Service_request, Professionals).join(Professionals, Service_request.prof_id == Professionals.prof_id).filter(Service_request.status=="Accepted" or Service_request.status=="Requested").all())
         if not check:
-            p1 = Professionals.query.filter_by(prof_id=session["id"]).first()
-            db.session.delete(p1)
+            p1 = Professionals.query.filter_by(prof_id=id).first()
+            p1.pname="user"
+            p1.pphoneNo="NA"
+            p1.pexp=-1
+            p1.is_approved="Blocked"
             db.session.commit()
-            return redirect("/admin")
+            return "deleted"
             
         else:
             flash("Sorry,you cannot delete your account until all requests are either closed or rejected")

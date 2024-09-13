@@ -45,17 +45,27 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Document</th>
                 <th>Experience</th>
                 <th>Serice name</th>
                 <th>Action</th>
             </tr>
             {%for i in prof%}
             <tr>
-                <td><a href="/admin_viewProfile/Professional/{{i.prof_id}}">{{i.prof_id}}</a></td>
+                <td>
+                    <a href="/admin_viewProfile/Professional/{{i.prof_id}}">{{i.prof_id}}</a>
+                </td>
                 <td>{{i.pname}}</td>
+                <td><a href="{{ url_for('view_prof_doc', prof_id=i.prof_id) }}">View Document</a></td>
                 <td>{{i.pexp}}</td>
                 <td>{{i.pserviceName}}</td>
-                <td><a href="/edit">Approve</a>/<a href="/edit">Reject</a>/<a href="/deleteProf/{{i.prof_id}}">Delete</a></td>
+                <td>
+                {%if i.is_approved=="Waiting"%}
+                <a href="/acceptProfessional/{{i.prof_id}}">Approve</a>/<a href="/rejectProfessional/{{i.prof_id}}">Reject</a>
+                {%else%}
+                <a href="/deleteProf/{{i.prof_id}}">Delete</a>
+                {%endif%}
+                </td>
             </tr>
             {%endfor%}
         </table>
