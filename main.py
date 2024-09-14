@@ -47,6 +47,7 @@ class Professionals(db.Model):
     pphoneNo=db.Column(db.String(),nullable=False)
     ppincode=db.Column(db.String(),nullable=False)
     is_approved=db.Column(db.String(),nullable=False)
+    price=db.Column(db.Integer(),nullable=False)
     service_requests = db.relationship('Service_request', backref='professional')
 
 class Service(db.Model):
@@ -65,6 +66,7 @@ class Service_request(db.Model):
     cust_id=db.Column(db.Integer(),db.ForeignKey("customer.cust_id"),nullable=False)
     prof_id=db.Column(db.Integer(),db.ForeignKey("professionals.prof_id"),nullable=False)
     s_id=db.Column(db.Integer(),db.ForeignKey("service.s_id"),nullable=False)
+    price=db.Column(db.Integer(),nullable=False)
     date_of_req=db.Column(db.String(),nullable=False)
     date_of_com=db.Column(db.String())
     srating=db.Column(db.Integer())
@@ -495,14 +497,14 @@ def customer_subService(subService_title):
     else:
         return redirect("/login")
 
-@app.route("/book_service/<prof_id>/<subService_title>")
-def book_service(prof_id,subService_title):
+@app.route("/book_service/<prof_id>/<subService_title>/<price>")
+def book_service(prof_id,subService_title,price):
     if session["role"]=="customer":
         service_id = (db.session.query(Service.s_id)
                 .join(Professionals, Professionals.pserviceName == Service.sname)
                 .filter(Professionals.pserviceName == subService_title).filter(Professionals.is_approved=="Accepted")
                 .first())
-        s1=Service_request(cust_id=session["id"],prof_id=int(prof_id),s_id=service_id[0],date_of_req=date.today(),status="Requested")
+        s1=Service_request(cust_id=session["id"],prof_id=int(prof_id),s_id=service_id[0],date_of_req=date.today(),price=price,status="Requested")
         db.session.add(s1)
         db.session.commit()
         flash("Your Service has been booked successfully")
@@ -553,12 +555,17 @@ def cust_profile():
     else:
         return redirect("/login")
 #---------------------------------------PAYMENT--------------------------------------------------
-@app.route("/payment",methods=["GET","POST"])
-def payment():
+@app.route("/payment/<id>",methods=["GET","POST"])
+def payment(id):
     if request.method=="POST":
         cradnum=request.form.get("cradnumber")
         exprire=request.form.get("expiry")
         cvv=request.form.get("cvv")
+        s=Service_request.query.filter(s_id=id).one()
+        s.cpay=True
+        s.status="C Pay done"
+        return redirect("/customer")
+
     else:
         return render_template("payment.html")
 #---------------------------------------extra------------------------------
@@ -810,7 +817,8 @@ def professional_signUp():
                 paddress=request.form.get("caddress")
                 ppincode=request.form.get("cpincode")
                 pphoneNo=request.form.get("cphoneNo")
-                p1=Professionals(pemail=pemail,pdocData=file.read(),pdocFilename=file.filename,ppassword=ppassword,pname=pname,pserviceName=pserviceName,pexp=pexp,paddress=paddress,ppincode=ppincode,pphoneNo=pphoneNo,is_approved="Waiting")
+                price=request.form.get("price")
+                p1=Professionals(pemail=pemail,pdocData=file.read(),pdocFilename=file.filename,ppassword=ppassword,pname=pname,pserviceName=pserviceName,pexp=pexp,paddress=paddress,ppincode=ppincode,pphoneNo=pphoneNo,price=price,is_approved="Waiting")
                 db.session.add(p1)
                 db.session.commit()
                 

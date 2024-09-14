@@ -22,12 +22,9 @@
         <h2>Best {{subService_title}} Pakages</h2>
         <div class="pakages">
             {%for i in subServices%}
-            <span>{{i.pname}}</span><a href="/book_service/{{i.prof_id}}/{{subService_title}}" type="button">Book</a>
+            <span>{{i.pname}}</span><span>{{i.price}}</span><a href="/book_service/{{i.prof_id}}/{{subService_title}}/{{i.price}}">Book</a>
             {%endfor%}
-            <span>description</span><button>Book</button>
-            <span>description</span><button>Book</button>
-            <span>description</span><button>Book</button>
-            <span>description</span><button>Book</button>
+
         </div>
 
     </div>
