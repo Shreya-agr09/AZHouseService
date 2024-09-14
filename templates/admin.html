@@ -14,7 +14,7 @@
             <a href="/admin">Home</a>
             <a href="/admin_search">Search</a>
             <a href="/admin_summary">Summary</a>
-            <a href="/logout">Logout</a>
+            <a href="/logout">Logout</a> 
         </ul>
     </header>
     <div class="services">
@@ -63,12 +63,13 @@
                 {%if i.is_approved=="Waiting"%}
                 <a href="/acceptProfessional/{{i.prof_id}}">Approve</a>/<a href="/rejectProfessional/{{i.prof_id}}">Reject</a>
                 {%else%}
-                <a href="/deleteProf/{{i.prof_id}}">Delete</a>
+                <a href="/blockProf/{{i.prof_id}}">Block</a>
                 {%endif%}
                 </td>
             </tr>
             {%endfor%}
         </table>
+        <a href="viewBlockedProf">view all blocked professional</a>
     </div>
     <!--Customer column-->
     <div class="customer">
@@ -87,7 +88,7 @@
                 <td>{{i.cname}}</td>
                 <td>{{i.caddress}}</td>
                 <td>{{i.cpincode}}</td>
-                <td><a href="/deleteCust/{{i.cust_id}}">Delete</a></td>
+                <td><a href="/blockCust/{{i.cust_id}}">Block</a></td>
             </tr>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -100,6 +101,7 @@
             {% endwith %}
             {%endfor%}
         </table>
+        <a href="viewblockedCust">View all blocked customer</a>
     </div>
     <!--Service Requests-->
     <div class="services">
@@ -112,6 +114,8 @@
                 <th>Customer Name</th>
                 <th>Requested Date</th>
                 <th>Status</th>
+                <th>Professional Status</th>
+                <th>Customer Status</th>
             </tr>
             {%for cust,serv_r,prof in serv_req%}
             <tr>
@@ -120,6 +124,8 @@
                 <td>{{cust.cname}}</td>
                 <td>{{serv_r.date_of_req}}</td>
                 <td>{{serv_r.status}}</td>
+                <td>{{prof.is_approved}}</td>
+                <td>{{cust.is_allowed}}</td>
             </tr>
             {%endfor%}
 

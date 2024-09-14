@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocked Professionals</title>
+</head>
+<body>
+    <header>
+        <span>Welcome Admin</span>
+        <ul>
+            <a href="/admin">Home</a>
+            <a href="/admin_search">Search</a>
+            <a href="/admin_summary">Summary</a>
+            <a href="/logout">Logout</a> 
+        </ul>
+    </header>
+    {%if role=="customer"%}
+    <h2>Blocked Customers</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>PinCode</th>
+                <th>Action</th>
+            </tr>
+            {%for i in blockedCust%}
+            <tr>
+                <td><a href="/admin_viewProfile/Customer/{{i.cust_id}}">{{i.cust_id}}</a></td>
+                <td>{{i.cname}}</td>
+                <td>{{i.caddress}}</td>
+                <td>{{i.cpincode}}</td>
+                <td><a href="/unblockCust/{{i.cust_id}}">Unblock</a>/<a href="/deleteCust/{{i.cust_id}}">Delete</a></td>
+            </tr>
+            {%endfor%}
+        </table>
+    {%else%}
+    <h3>Blocked Professionals</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Document</th>
+            <th>Experience</th>
+            <th>Serice name</th>
+            <th>Action</th>
+        </tr>
+        {%for i in blockedProf%}
+        <tr>
+            <td>
+                <a href="/admin_viewProfile/Professional/{{i.prof_id}}">{{i.prof_id}}</a>
+            </td>
+            <td>{{i.pname}}</td>
+            <td><a href="{{ url_for('view_prof_doc', prof_id=i.prof_id) }}">View Document</a></td>
+            <td>{{i.pexp}}</td>
+            <td>{{i.pserviceName}}</td>
+            <td>
+            
+            <a href="/unblockProf/{{i.prof_id}}">Unblock</a>/<a href="/deleteProf/{{i.prof_id}}">Delete</a>
+            </td>
+        </tr>
+        {%endfor%}
+    </table>
+    {%endif%}
+</body>
+</html>

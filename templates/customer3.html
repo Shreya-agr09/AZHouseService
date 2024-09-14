@@ -44,10 +44,15 @@
         </tr>
         {%for prof,ser_rq,service in custHistory%}
         <tr>
-            <td>{{ser_rq.sr_id}}</td>
-            <td>{{service.sname}}</td>
-            <td>{{prof.pname}}</td>
-            <td>{{prof.pphoneNo}}</td>
+            <td>{{ ser_rq.sr_id }}</td>
+                    {%if prof.is_approved=="Accepted"%}
+                    <td>{{ service.sname }}</td>
+                    <td>{{ prof.pname }}</td>
+                    {%else%}
+                    <td>User</td>
+                    <td>NA</td>
+                    {%endif%}
+                    <td>{{prof.pphoneNo}}</td>
             <td>
                 {% if ser_rq.status=="Requested" %}
                     Requested

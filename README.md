@@ -10,3 +10,7 @@
 7.What will happen to the pending sevices if pthe professional deleted his account 
 8.What will happen if there are some services pending related to thtat customer
 9.If admin deletes any professional it will be marked as blocked in profesionals.status as to not lost any data and if they leave themselves it will be marked as left same goes for customer.
+
+Service_request status:Requested(Default),Accepted,Rejected,Closed
+professional is_approved:Waiting(Default),Accepted,Rejectd,Blocked,Left,Deleted
+Customer is_allowed:Allowed,Blocked,Left

@@ -30,11 +30,18 @@
                 <th>Action</th>
             </tr>
             {%for i,ser_rq in cust_detail_today%}
-            <tr>
+            <tr>{%if i.is_allowed=="Allowed"%}
                 <td>{{i.cust_id}}</td>
                 <td>{{i.cname}}</td>
                 <td>{{i.cphoneNo}}</td>
                 <td>{{i.caddress}}</td>
+                {%else%}
+                <td>0</td>
+                <td>User</td>
+                <td>NA</td>
+                <td>NA</td>
+                {%endif%}
+
                 {%if ser_rq.status=="Requested"%}
                 <td><a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a
                         href="/profRejectService/{{ser_rq.sr_id}}">Reject</a></td>

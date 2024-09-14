@@ -59,6 +59,7 @@
             <tbody>
                 {% for result in search_results %}
                 <tr>
+                    {%if result.customer.is_alowed=="Accepted"%}
                     <td>{{ result.sr_id }}</td>
                     <td>{{ result.customer.cname }}</td>
                     <td>{{ result.customer.cemail }}</td>
@@ -67,6 +68,7 @@
                     <td>{{ result.date_of_req }}</td>
                     <td>{{ result.srating }}</td>
                     <td>{{result.status}}</td>
+                    {%endif%}
                 </tr>
                 {% endfor %}
             </tbody>
