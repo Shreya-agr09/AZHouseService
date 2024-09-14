@@ -1,10 +1,8 @@
 things yet to do:
 
-deleting customer
-can do for blocked customer also
-make a page in admin where all existing professionals will be listed 
+do the same for services
 can do same for profesiional rejected task
-admin can block /unblock prof,cust 
+
 
 summary functionality
 show professionals on basis of rating 

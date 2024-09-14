@@ -513,7 +513,7 @@ def book_service(prof_id,subService_title):
 @app.route("/deleteCustProfile")
 def deleteCustProfile():
     if session["id"] and session["role"]=="customer":
-        check = (db.session.query(Service_request, Customer).join(Customer, Service_request.cust_id == Customer.cust_id).filter(Service_request.status=="Accepted").all())
+        check = (db.session.query(Service_request, Customer).join(Customer, Service_request.cust_id == Customer.cust_id).filter(or_(Service_request.status == "Accepted",Service_request.status == "Requested")).all())
         if not check:
             c1=Customer.query.filter_by(cust_id=session["id"]).first()
             c1.is_allowed="Left"
@@ -552,7 +552,15 @@ def cust_profile():
         return render_template("custprofile.html",c=custDetails)
     else:
         return redirect("/login")
-
+#---------------------------------------PAYMENT--------------------------------------------------
+@app.route("/payment",methods=["GET","POST"])
+def payment():
+    if request.method=="POST":
+        cradnum=request.form.get("cradnumber")
+        exprire=request.form.get("expiry")
+        cvv=request.form.get("cvv")
+    else:
+        return render_template("payment.html")
 #---------------------------------------extra------------------------------
 @app.route("/custSummary")
 def custSummary():

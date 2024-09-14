@@ -13,4 +13,4 @@
 
 Service_request status:Requested(Default),Accepted,Rejected,Closed
 professional is_approved:Waiting(Default),Accepted,Rejectd,Blocked,Left,Deleted
-Customer is_allowed:Allowed,Blocked,Left
+Customer is_allowed:Allowed,Blocked,Left,Deleted
