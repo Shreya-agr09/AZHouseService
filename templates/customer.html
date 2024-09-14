@@ -17,6 +17,7 @@
             <li><a href="/logout">Logout</a></li>
         </ul>
         <a href="/cust_profile">Profile</a>
+        <a href="transHistory/{{session['id']}}">Transaction History</a>
     </header>
     <div class="selection">
         <h2>Looking For</h2>
@@ -63,7 +64,11 @@
                             Closed
                         {% elif ser_rq.status == "Rejected" %}
                             Rejected
-                        {% else %}
+                        {%elif ser_rq.status=="Accepted"%}
+                        <a href="payment/{{ser_rq.sr_id}}">Make Payment</a>
+                        {% elif ser_rq.status == "C Pay done" %}
+                            Payment under Confrmation
+                        {% elif ser_rq.status=="Payment Verified" %}
                             <a href="/closeService/{{ser_rq.sr_id}}">Close It?</a>
                         {% endif %}
                     </td>

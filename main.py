@@ -68,6 +68,8 @@ class Service_request(db.Model):
     s_id=db.Column(db.Integer(),db.ForeignKey("service.s_id"),nullable=False)
     price=db.Column(db.Integer(),nullable=False)
     date_of_req=db.Column(db.String(),nullable=False)
+    cpay=db.Column(db.Boolean(),nullable=False)
+    ppay=db.Column(db.Boolean(),nullable=False)
     date_of_com=db.Column(db.String())
     srating=db.Column(db.Integer())
     status=db.Column(db.String())
@@ -138,7 +140,7 @@ def login():
 #===============================Admin================================================================================
 @app.route("/admin")
 def admin():
-    if session["username"]=="admin":
+    if "role" in session and session["role"]=="admin":
         prof=Professionals.query.filter(or_(Professionals.is_approved == "Waiting", 
                                               Professionals.is_approved == "Accepted")).all()
         cust=Customer.query.filter(Customer.is_allowed=="Allowed").all()
@@ -504,7 +506,7 @@ def book_service(prof_id,subService_title,price):
                 .join(Professionals, Professionals.pserviceName == Service.sname)
                 .filter(Professionals.pserviceName == subService_title).filter(Professionals.is_approved=="Accepted")
                 .first())
-        s1=Service_request(cust_id=session["id"],prof_id=int(prof_id),s_id=service_id[0],date_of_req=date.today(),price=price,status="Requested")
+        s1=Service_request(cust_id=session["id"],prof_id=int(prof_id),s_id=service_id[0],date_of_req=date.today(),price=price,status="Requested",cpay=False,ppay=False)
         db.session.add(s1)
         db.session.commit()
         flash("Your Service has been booked successfully")
@@ -561,13 +563,31 @@ def payment(id):
         cradnum=request.form.get("cradnumber")
         exprire=request.form.get("expiry")
         cvv=request.form.get("cvv")
-        s=Service_request.query.filter(s_id=id).one()
+        s=Service_request.query.filter(Service_request.sr_id==id).one()
         s.cpay=True
         s.status="C Pay done"
+        db.session.commit()
         return redirect("/customer")
-
     else:
-        return render_template("payment.html")
+        return render_template("paymentPortal.html",id=id)
+@app.route("/pPaymentConfirm/<id>")
+def ppayconfirm(id):
+    s=Service_request.query.filter(Service_request.sr_id==id).one()
+    s.ppay=True
+    s.status="Payment Verified"
+    db.session.commit()
+    return redirect("/professional")
+
+@app.route("/transHistory/<id>")
+def transHistory(id):
+    s=(db.session.query(Professionals, Service_request)
+                .join(Service_request, Service_request.prof_id == Professionals.prof_id)
+                .join(Service, Service.s_id == Service_request.s_id)
+                .filter(Service_request.cust_id == id).filter(Service_request.ppay==True)
+                .all())
+    return render_template("transHistory.html",s=s)
+    
+
 #---------------------------------------extra------------------------------
 @app.route("/custSummary")
 def custSummary():

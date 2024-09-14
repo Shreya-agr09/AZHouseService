@@ -6,13 +6,14 @@
     <title>Payment</title>
 </head>
 <body>
-    <form action="/payment" method="POST">
+    <form action="/payment/{{id}}" method="POST">
         <label>Card Number:</label>
         <input type="number" name="cardnum">
         <label>Expiry</label>
         <input type="date" name="expiry">
         <label>CVV</label>
         <input type="number" name="CVV">
+        <input type="submit" value="submit">
     </form>
 </body>
 </html>

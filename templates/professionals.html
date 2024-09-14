@@ -30,7 +30,8 @@
                 <th>Action</th>
             </tr>
             {%for i,ser_rq in cust_detail_today%}
-            <tr>{%if i.is_allowed=="Allowed"%}
+            <tr>
+                {%if i.is_allowed=="Allowed"%}
                 <td>{{i.cust_id}}</td>
                 <td>{{i.cname}}</td>
                 <td>{{i.cphoneNo}}</td>
@@ -41,13 +42,15 @@
                 <td>NA</td>
                 <td>NA</td>
                 {%endif%}
-
-                {%if ser_rq.status=="Requested"%}
-                <td><a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a
-                        href="/profRejectService/{{ser_rq.sr_id}}">Reject</a></td>
+                <td>
+                {%if ser_rq.status == "Requested"%}
+                    <a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a
+                        href="/profRejectService/{{ser_rq.sr_id}}">Reject</a>
+                {%elif ser_rq.status=="C Pay done" %}
+                        <a href="pPaymentConfirm/{{ser_rq.sr_id}}">Confirm Payment</a>
                 {%else%}
-                <td>{{ser_rq.status}}</td>
-                {%endif%}
+                        {{ser_rq.status}}
+                {%endif%}</td>
             </tr>
             {%endfor%}
         </table>
@@ -81,8 +84,10 @@
                     {%if service.status == "Requested"%}
                     <a href="profAcceptService/{{service.sr_id}}">Accept</a>/<a
                         href="/profRejectService/{{service.sr_id}}">Reject</a>
+                    {%elif service.status=="C Pay done" %}
+                        <a href="pPaymentConfirm/{{service.sr_id}}">Confirm Payment</a>
                     {%else%}
-                    {{service.status}}
+                        {{service.status}}
                     {%endif%}
                 </td>
 

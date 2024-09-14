@@ -60,14 +60,18 @@
             {%endif%}
             <td>
                 {% if ser_rq.status=="Requested" %}
-                    Requested
-                {% elif ser_rq.status == "Closed" %}
-                    Closed
-                {% elif ser_rq.status == "Rejected" %}
-                    Rejected
-                {% else %}
-                    <a href="/closeService/{{ser_rq.sr_id}}">Close It?</a>
-                {% endif %}
+                            Requested
+                        {% elif ser_rq.status == "Closed" %}
+                            Closed
+                        {% elif ser_rq.status == "Rejected" %}
+                            Rejected
+                        {%elif ser_rq.status=="Accepted"%}
+                            <a href="payment/{{ser_rq.sr_id}}">Make Payment</a>
+                        {% elif ser_rq.status == "C Pay done" %}
+                            Payment under Confrmation
+                        {% elif ser_rq.status=="Payment Verified" %}
+                            <a href="/closeService/{{ser_rq.sr_id}}">Close It?</a>
+                        {% endif %}
             </td>
         </tr>
         {%endfor%}
