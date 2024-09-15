@@ -1,7 +1,6 @@
 from flask import Flask,render_template,request,redirect,session,flash,url_for,send_file
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
-from werkzeug.utils import secure_filename
 from sqlalchemy import or_
 from sqlalchemy import func
 from io import BytesIO
@@ -499,6 +498,8 @@ def customer_subService(subService_title):
     else:
         return redirect("/login")
 
+
+
 @app.route("/book_service/<prof_id>/<subService_title>/<price>")
 def book_service(prof_id,subService_title,price):
     if session["role"]=="customer":
@@ -807,11 +808,26 @@ def prof_profile():
     else:
         return redirect("/login")
 
-#status can take : Accepted,Rejected,Requested,Closed
+@app.route("/viewRejectedRequest")
+def viewRejectedRequest():
+    ser= (db.session.query(Customer,Service_request)
+                 .join(Service_request, Customer.cust_id == Service_request.cust_id)
+                 .join(Professionals, Professionals.prof_id == Service_request.prof_id)
+                 .filter(Service_request.prof_id == session["id"]).filter(Service_request.status == "Rejected")
+                 .all())
+    return render_template("viewRejectedRequest.html",ser)
+
+#status can take : Accepted,Rejected,Requested,Closed,C Pay done,Payment verified
 @app.route("/profAcceptService/<serviceRq_id>")
 def profAcceptService(serviceRq_id):
     s1=Service_request.query.filter_by(sr_id=serviceRq_id).one()
     s1.status="Accepted"
+    db.session.commit()
+    return redirect("/professional")
+@app.route("/profDeleteService/<serviceRq_id>")
+def profDeleteService(serviceRq_id):
+    s1=Service_request.query.filter_by(sr_id=serviceRq_id).one()
+    s1.status="Deleted"
     db.session.commit()
     return redirect("/professional")
 

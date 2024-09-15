@@ -1,12 +1,8 @@
 things yet to do:
 
-do the same for services
-can do same for profesiional rejected task
-
-
+do the same for service
 summary functionality
 show professionals on basis of rating 
-make a dummy payment portal
 bookmark
 view password
 styling

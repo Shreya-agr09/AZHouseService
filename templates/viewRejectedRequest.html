@@ -1,0 +1,45 @@
+<header>
+    <span>Welcome to Professional</span>
+    <ul>
+        <a href="/professional">Home</a>
+        <a href="/professional_search">Search</a>
+        <a href="/summary">Summary</a>
+        <a href="/logout">Logout</a>
+    </ul>
+    <a href="/prof_profile">Profile</a>
+    <a href="/viewRejectedRequest">View rejected requests</a>
+</header>
+<div class="today_services">
+    {%if ser%}
+    <h2>Rejected Services</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Customer Name</th>
+            <th>Contact Number</th>
+            <th>Location</th>
+            <th>Action</th>
+        </tr>
+        {%for i,ser_rq in ser%}
+        <tr>
+            {%if i.is_allowed=="Allowed"%}
+            <td>{{i.cust_id}}</td>
+            <td>{{i.cname}}</td>
+            <td>{{i.cphoneNo}}</td>
+            <td>{{i.caddress}}</td>
+            {%else%}
+            <td>0</td>
+            <td>User</td>
+            <td>NA</td>
+            <td>NA</td>
+            {%endif%}
+            <td>
+            <a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a href="/profDeleteService/{{ser_rq.sr_id}}">Delete</a>
+            </td>
+        </tr>
+        {%endfor%}
+    </table>
+    {%else%}
+    <h3>No Services are there to be delivered Today</h3>
+    {%endif%}
+</div>
