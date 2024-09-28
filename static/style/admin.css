@@ -1,0 +1,65 @@
+table {
+    width: 70%;
+    border-collapse: separate; /* Change from collapse to separate for border-radius to work */
+    border-spacing: 0; /* Avoid gaps between cells */
+    border: 2px solid #333; /* Apply border around the table */
+    border-radius: 10px; /* Add border-radius for rounded corners */
+    overflow: hidden; /* To ensure corners stay rounded */
+    margin: 4%;
+    margin-top:2%;
+    font-size: 18px;
+    text-align: left;
+}
+
+th, td {
+    padding: 8px 40px;
+}
+
+th {
+    background-color: #333;
+    color: #fff;
+    font-weight: bold;
+}
+
+tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+tr:last-of-type {
+    border-bottom: 2px solid #333;
+}
+
+td a {
+    color: blue;
+    text-decoration: none;
+}
+
+td a:hover {
+    text-decoration: underline;
+}
+
+h2 {
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+    margin: 2% 2% 0% 4%;
+}
+/* Add border-radius for the first and last rows */
+table tr:first-child th:first-child {
+    border-top-left-radius: 10px; /* Top left corner */
+}
+
+table tr:first-child th:last-child {
+    border-top-right-radius: 10px; /* Top right corner */
+}
+
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px; /* Bottom left corner */
+}
+
+table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px; /* Bottom right corner */
+}

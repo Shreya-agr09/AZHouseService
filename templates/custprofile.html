@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Profile</title>
+    <link rel="stylesheet" href="../static/style/nav.css">
+    <link rel="stylesheet" href="../static/style/customer.css">
 </head>
 <style>
     .main{
@@ -19,15 +21,17 @@
 </style>
 <body>
     <header>
-        <span>Welcome to Professional</span>
+        <h2>Welcome to Customer</h2>
         <ul>
             <a href="/customer">Home</a>
             <a href="/customer_search">Search</a>
-            <a href="/summary">Summary</a>
+            <a href="/custSummary">Summary</a>
             <a href="/logout">Logout</a>
         </ul>
+        <ul style="width:24%;">
         <a href="/cust_profile">Profile</a>
-    </header>
+        <a href="transHistory/{{session['id']}}">Transaction History</a></ul>
+        </header>
     <div class="main">
     
     <div class="left">

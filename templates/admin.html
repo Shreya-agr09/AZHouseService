@@ -5,18 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
+      <link rel="stylesheet" href="../static/style/nav.css">
+      <link rel="stylesheet" href="../static/style/admin.css">
     
 </head>
 
 <body>
     <header>
-        <p>Welcome Admin</p>
+        <h2>Welcome Admin</h2>
         <ul>
             <a href="/admin">Home</a>
             <a href="/admin_search">Search</a>
             <a href="/admin_summary">Summary</a>
+           
         </ul>
-        <ul><a href="/logout">Logout</a> </ul>
+        <ul style="width:24%;justify-content: end;"><a href="/logout">Logout</a> </ul>
     </header>
     <div class="services">
         <h2>Services</h2>
@@ -108,7 +111,7 @@
     <div class="services">
         <h2>Services</h2>
         {%if serv_req%}
-        <table>
+        <table style="width:90%">
             <tr>
                 <th>ID</th>
                 <th>Assigned Professionals</th>

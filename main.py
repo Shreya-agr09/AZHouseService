@@ -722,7 +722,7 @@ def customer_signUp():
 #================================PROFESSIONALS===========================================================================
 @app.route("/professional")
 def professional():
-    service_requests = Service_request.query.filter_by(prof_id=session["id"]).one()
+    service_requests = Service_request.query.filter_by(prof_id=session["id"]).first()
     if service_requests.service.status==False:
         msg="This service you are associated with is temporarily down"
     else:
@@ -827,7 +827,7 @@ def viewRejectedRequest():
                  .join(Professionals, Professionals.prof_id == Service_request.prof_id)
                  .filter(Service_request.prof_id == session["id"]).filter(Service_request.status == "Rejected")
                  .all())
-    return render_template("viewRejectedRequest.html",ser)
+    return render_template("viewRejectedRequest.html",ser=ser)
 
 #status can take : Accepted,Rejected,Requested,Closed,C Pay done,Payment verified
 @app.route("/profAcceptService/<serviceRq_id>")

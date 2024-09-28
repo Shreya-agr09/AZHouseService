@@ -5,19 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional</title>
+    <link rel="stylesheet" href="../static/style/nav.css">
+    <link rel="stylesheet" href="../static/style/admin.css">
 </head>
 
 <body>
     <header>
-        <span>Welcome to Professional</span>
-        <ul>
-            <a href="/professional">Home</a>
-            <a href="/professional_search">Search</a>
-            <a href="/summary">Summary</a>
-            <a href="/logout">Logout</a>
-        </ul>
-        <a href="/prof_profile">Profile</a>
-        <a href="/viewRejectedRequest">View rejected requests</a>
+        <h2>Welcome to Professional</h2>
+                <ul>
+                    <a href="/professional">Home</a>
+                    <a href="/professional_search">Search</a>
+                    <a href="/summary">Summary</a>
+                    <a href="/logout">Logout</a>
+                </ul>
+                <ul>
+                    <a href="/prof_profile">Profile</a>
+                    <a href="/viewRejectedRequest">View rejected requests</a>
+                </ul>
     </header>
     {%if msg%}{{msg}}{%endif%}
     <div class="today_services">
@@ -45,14 +49,15 @@
                 <td>NA</td>
                 {%endif%}
                 <td>
-                {%if ser_rq.status == "Requested"%}
+                    {%if ser_rq.status == "Requested"%}
                     <a href="profAcceptService/{{ser_rq.sr_id}}">Accept</a>/<a
                         href="/profRejectService/{{ser_rq.sr_id}}">Reject</a>
-                {%elif ser_rq.status=="C Pay done" %}
-                        <a href="pPaymentConfirm/{{ser_rq.sr_id}}">Confirm Payment</a>
-                {%else%}
-                        {{ser_rq.status}}
-                {%endif%}</td>
+                    {%elif ser_rq.status=="C Pay done" %}
+                    <a href="pPaymentConfirm/{{ser_rq.sr_id}}">Confirm Payment</a>
+                    {%else%}
+                    {{ser_rq.status}}
+                    {%endif%}
+                </td>
             </tr>
             {%endfor%}
         </table>
@@ -87,9 +92,9 @@
                     <a href="profAcceptService/{{service.sr_id}}">Accept</a>/<a
                         href="/profRejectService/{{service.sr_id}}">Reject</a>
                     {%elif service.status=="C Pay done" %}
-                        <a href="pPaymentConfirm/{{service.sr_id}}">Confirm Payment</a>
+                    <a href="pPaymentConfirm/{{service.sr_id}}">Confirm Payment</a>
                     {%else%}
-                        {{service.status}}
+                    {{service.status}}
                     {%endif%}
                 </td>
 
@@ -97,7 +102,7 @@
                     {{service.srating}}
                     {%else%}
                     NA
-                {%endif%}</td>
+                    {%endif%}</td>
 
             </tr>
             {%endfor%}

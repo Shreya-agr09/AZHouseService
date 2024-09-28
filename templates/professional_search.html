@@ -5,18 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Search</title>
+    <link rel="stylesheet" href="../static/style/nav.css">
+    <link rel="stylesheet" href="../static/style/admin.css">
 </head>
-
+<style>
+    th,td{
+        padding:8px 8px;
+    }
+</style>
 <body>
     <header>
-        <span>Welcome to Professional</span>
-        <ul>
-            <a href="/professional">Home</a>
-            <a href="/professional_search">Search</a>
-            <a href="/summary">Summary</a>
-            <a href="/logout">Logout</a>
-        </ul>
-        <a href="/prof_profile">Profile</a>
+        <h2>Welcome to Professional</h2>
+                <ul>
+                    <a href="/professional">Home</a>
+                    <a href="/professional_search">Search</a>
+                    <a href="/summary">Summary</a>
+                    <a href="/logout">Logout</a>
+                </ul>
+                <ul>
+                    <a href="/prof_profile">Profile</a>
+                    <a href="/viewRejectedRequest">View rejected requests</a>
+                </ul>
     </header>
     <form action="/professional_search" method="POST">
         <label for="search_by">Search by:</label>
@@ -42,8 +51,8 @@
     <!-- rendering search results -->
     {%if search_by%}
         {% if search_results %}
-        <h2>Search Results for {{search_by}} for {{search_text}}</h2>
-        <table border="1">
+        <h2>Search Results in {{search_by}} for {{search_text}}</h2>
+        <table style="width:90%">
             <thead>
                 <tr>
                     <th>ID</th>

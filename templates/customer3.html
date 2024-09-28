@@ -5,25 +5,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer</title>
+    <link rel="stylesheet" href="../static/style/nav.css">
+    <link rel="stylesheet" href="../static/style/customer.css">
 </head>
 
 <body>
     <header>
         <h2>Welcome to Customer</h2>
         <ul>
-            <li><a href="/customer">Home</a></li>
-            <li><a href="/customer_search">Search</a></li>
-            <li><a href="/summary">Summary</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <a href="/customer">Home</a>
+            <a href="/customer_search">Search</a>
+            <a href="/custSummary">Summary</a>
+            <a href="/logout">Logout</a>
         </ul>
-        <a href="/cust_profile">Profile</a>
+        <ul style="width:24%;">
+            <a href="/cust_profile">Profile</a>
+            <a href="transHistory/{{session['id']}}">Transaction History</a>
+        </ul>
     </header>
+
     <div class="bestPakages">
         <h2>Best {{subService_title}} Pakages</h2>
         <div class="pakages">
-            {%for i in subServices%}
-            <span>{{i.pname}}</span> <span>{{i.price}}</span><a href="/book_service/{{i.prof_id}}/{{subService_title}}/{{i.price}}">Book</a>
-            {%endfor%}
+            
+            <table style="width:50%">
+                <tr>
+                    <th>Professional Name</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+                {%for i in subServices%}
+                <tr>
+                    <td>{{i.pname}}</td>
+                    <td>{{i.price}}</td>
+                    <td><a href="/book_service/{{i.prof_id}}/{{subService_title}}/{{i.price}}">Book</a></td>
+                </tr>
+                {%endfor%}
+            </table>
 
         </div>
 
@@ -42,34 +60,34 @@
         {%for prof,ser_rq,service in custHistory%}
         <tr>
             <td>{{ ser_rq.sr_id }}</td>
-                    <td>{{ service.sname }}</td>
-                    {%if prof.is_approved=="Accepted"%}
-                    <td>{{ prof.pname }}</td>
-                    <td>{{prof.pphoneNo}}</td>
-                    {%else%}
-                    <td>User</td>
-                    <td>NA</td>
-                    {%endif%}
+            <td>{{ service.sname }}</td>
+            {%if prof.is_approved=="Accepted"%}
+            <td>{{ prof.pname }}</td>
+            <td>{{prof.pphoneNo}}</td>
+            {%else%}
+            <td>User</td>
+            <td>NA</td>
+            {%endif%}
             <td>
                 {% if ser_rq.status=="Requested" %}
-                            Requested
-                        {% elif ser_rq.status == "Closed" %}
-                            Closed
-                        {% elif ser_rq.status == "Rejected" %}
-                            Rejected
-                        {%elif ser_rq.status=="Accepted"%}
-                        <a href="payment/{{ser_rq.sr_id}}">Make Payment</a>
-                        {% elif ser_rq.status == "C Pay done" %}
-                            Payment under Confrmation
-                        {% elif ser_rq.status=="Payment Verified" %}
-                            <a href="/closeService/{{ser_rq.sr_id}}">Close It?</a>
-                        {% endif %}
+                Requested
+                {% elif ser_rq.status == "Closed" %}
+                Closed
+                {% elif ser_rq.status == "Rejected" %}
+                Rejected
+                {%elif ser_rq.status=="Accepted"%}
+                <a href="payment/{{ser_rq.sr_id}}">Make Payment</a>
+                {% elif ser_rq.status == "C Pay done" %}
+                Payment under Confrmation
+                {% elif ser_rq.status=="Payment Verified" %}
+                <a href="/closeService/{{ser_rq.sr_id}}">Close It?</a>
+                {% endif %}
             </td>
         </tr>
         {%endfor%}
 
         </tr>
-        
+
     </table>
     {%else%}
     <h3>No previous history is there to show</h3>
