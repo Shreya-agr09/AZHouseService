@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Professional SignUp</title>
+    <link rel="stylesheet" href="../static/form.css">
     <script>
         // Function to update the base price dynamically based on the service selected
         function updateBasePrice() {
@@ -36,45 +37,45 @@
 </head>
 
 <body>
-    <h1>Service Professional SignUp</h1>
-    <form action="/professional_signUp" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
-        <label>Email Id(Username)</label>
-        <input type="input" name="cemail" /><br>
+    <h1 style="color: var(--primary);">Welcome to AZhousehold</h1>
+    <div class="main">
+        <div class="left"><img src="../static/images/img1.jpg" alt=""></div>
+        <form action="/professional_signUp" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
+        <h1>Service Professional SignUp</h1>
+    
+        <input type="email" name="cemail" placeholder="Email Id(Username)" style="width:40%"/>
+        <input type="text" name="cname" placeholder="Fullname" style="width:40%"/><br>
 
-        <label>Password</label>
-        <input type="password" name="cpassword" /><br>
+        <input type="password" name="cpassword" placeholder="Password"/><br>
 
-        <label>Fullname</label>
-        <input type="input" name="cname" /><br>
 
         <label>Service Name</label>
-        <select name="serviceName" id="serviceName" onchange="updateBasePrice()">
+        <select name="serviceName" id="serviceName" style="margin:4px;" onchange="updateBasePrice()">
             {% for service in allServices %}
             <option value="{{ service.sname }}" data-baseprice="{{ service.sbaseprice }}">
                 {{ service.sname }}
             </option>
             {% endfor %}
-        </select><br>
+        </select>
 
-        <label>Price</label>
-        <input type="number" name="price" id="price"><br>
-        <span id="basePriceMessage">Must be above {{ allServices[0].sbaseprice }}</span><br>
-        <span id="priceError" style="color: red;"></span><br> <!-- Error message displayed here -->
 
-        <label>Upload Document (PDF)</label>
-        <input type="file" name="document" accept=".pdf" required/><br>
+        
+        <label>Document (PDF)</label>
+        <input type="file" name="document" accept=".pdf" required style="width:40%"/><br>
+        
+        
+        
+        <textarea name="caddress" placeholder="Address"></textarea><br>
 
-        <label>Experience (in years)</label>
-        <input type="input" name="exp" /><br>
+        <input type="number" name="price" id="price" placeholder="Price" style="width:40%">
 
-        <label>Address</label>
-        <textarea name="caddress"></textarea><br>
+        <span id="basePriceMessage">Must be above {{ allServices[0].sbaseprice }}</span>
+        <span id="priceError" style="color: red;"></span> <!-- Error message displayed here -->
+        <input type="text" name="exp" placeholder="Experience(in years)"  style="width:40%"/>
 
-        <label>Pincode</label>
-        <input type="input" name="cpincode" /><br>
+        <input type="text" name="cpincode" placeholder="Pincode"  style="width:40%"/>
 
-        <label>Phone Number</label>
-        <input type="input" name="cphoneNo" /><br>
+        <input type="number" name="cphoneNo" placeholder="Phone number"/><br>
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -82,10 +83,11 @@
         {% endif %}
         {% endwith %}
 
-        <button type="submit">Register</button><br>
+        <input type="submit" value="Register"><br>
 
         <a href="/login">Login Here</a>
     </form>
+</div>
 </body>
 
 </html>

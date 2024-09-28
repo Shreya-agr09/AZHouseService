@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocked Services</title>
+</head>
+<body>
+    <header>
+        <span>Welcome Admin</span>
+        <ul>
+            <a href="/admin">Home</a>
+            <a href="/admin_search">Search</a>
+            <a href="/admin_summary">Summary</a>
+            <a href="/logout">Logout</a> 
+        </ul>
+    </header>
+    <h2>Blocked Services</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Service name</th>
+            <th>Base Price</th>
+            <th>Action</th>
+        </tr>
+        {%for i in s%}
+        <tr>
+            <td><a href="/admin_viewProfile/Service/{{i.s_id}}">{{i.s_id}}</a></td>
+            <td>{{i.sname}}</td>
+            <td>{{i.sbaseprice}}</td>
+            <td><a href="/unblockService/{{i.s_id}}">Unflag</a></td>
+        </tr>
+    </table>
+    {%endfor%}
+</body>
+</html>

@@ -5,17 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
+    
 </head>
 
 <body>
     <header>
-        <span>Welcome Admin</span>
+        <p>Welcome Admin</p>
         <ul>
             <a href="/admin">Home</a>
             <a href="/admin_search">Search</a>
             <a href="/admin_summary">Summary</a>
-            <a href="/logout">Logout</a> 
         </ul>
+        <ul><a href="/logout">Logout</a> </ul>
     </header>
     <div class="services">
         <h2>Services</h2>
@@ -36,7 +37,7 @@
             {%endfor%}
         </table>
     </div>
-    <a href="/new_service"> +New Service</a>
+    <a href="/new_service"> +New Service</a><a href="blockedServices">Blocked Services</a>
 
     <!--Proffessionals column-->
     <div class="services">

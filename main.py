@@ -58,6 +58,7 @@ class Service(db.Model):
     sbaseprice=db.Column(db.Integer())
     sdescription=db.Column(db.String(),nullable=False)
     pServiceType=db.Column(db.String(),nullable=False)
+    status=db.Column(db.Boolean(),nullable=False)
     service_requests = db.relationship('Service_request', backref='service')
 
 class Service_request(db.Model):
@@ -143,7 +144,7 @@ def admin():
         prof=Professionals.query.filter(or_(Professionals.is_approved == "Waiting", 
                                               Professionals.is_approved == "Accepted")).all()
         cust=Customer.query.filter(Customer.is_allowed=="Allowed").all()
-        service=Service.query.all()
+        service=Service.query.filter(Service.status==True).all()
         serv_req=(db.session.query(Customer,Service_request,Professionals)
                  .join(Service_request, Customer.cust_id == Service_request.cust_id)
                  .join(Professionals, Professionals.prof_id == Service_request.prof_id)
@@ -158,14 +159,18 @@ def new_service():
     if session["username"]=="admin":
         if request.method=="POST":
             serviceName=(request.form.get("servName")).strip()
-            sdesc=request.form.get("sdesc")
-            baseprice=request.form.get("baseprice")
-            time=request.form.get("timereq")
-            servtype=request.form.get("servtype")
-            s1=Service(sname=serviceName,stime_req=time,sbaseprice=baseprice,sdescription=sdesc,pServiceType=servtype)
-            db.session.add(s1)
-            db.session.commit()
-            return redirect("/admin")
+            if not(Service.query.filter_by(sname=serviceName).all()):
+                sdesc=request.form.get("sdesc")
+                baseprice=request.form.get("baseprice")
+                time=request.form.get("timereq")
+                servtype=request.form.get("servtype")
+                s1=Service(sname=serviceName,stime_req=time,sbaseprice=baseprice,sdescription=sdesc,pServiceType=servtype,status=True)
+                db.session.add(s1)
+                db.session.commit()
+                return redirect("/admin")
+            else:
+                flash("service already exist please unflag that")
+                return redirect("/new_service")
         else:
             return render_template("newService.html")
     else:
@@ -175,7 +180,7 @@ def new_service():
 def deleteService(id):
     if session["username"]=="admin":
         delService=Service.query.filter_by(s_id=id).first()
-        db.session.delete(delService)
+        delService.status=False
         db.session.commit()
         return redirect("/admin")
     else:
@@ -198,6 +203,18 @@ def editService(serviceId):
     else:
         s=Service.query.filter_by(s_id=serviceId).one()
         return render_template("serviceEdit.html",s=s)
+
+@app.route("/unblockService/<id>")
+def unblockService(id):
+    s=Service.query.filter_by(s_id=id).one()
+    s.status=True
+    db.session.commit()
+    return redirect("/blockedServices")
+
+@app.route("/blockedServices")
+def blockedServices():
+    s=Service.query.filter(Service.status==False).all()
+    return render_template("blockedServices.html",s=s)
 
 @app.route('/admin_search', methods=['GET','POST'])
 def admin_search():
@@ -238,14 +255,7 @@ def admin_search():
                             )).all())
         elif search_by == 'service':
             # Search professionals by name, service, or experience
-            search_results = (db.session.query(Service)
-                            .filter(or_(
-                                Service.sname.ilike(f'%{search_text}%'),
-                                Service.stime_req.ilike(f'%{search_text}%'),
-                                Service.sbaseprice.ilike(f'%{search_text}%'),
-                                Service.sdescription.ilike(f'%{search_text}%'),
-                                Service.pServiceType.ilike(f'%{search_text}%')
-                            )).all())
+            search_results = (db.session.query(Service).filter(or_(Service.sname.ilike(f'%{search_text}%'),Service.stime_req.ilike(f'%{search_text}%'),Service.sbaseprice.ilike(f'%{search_text}%'),Service.sdescription.ilike(f'%{search_text}%'),Service.pServiceType.ilike(f'%{search_text}%'))).filter(Service.status==True).all())
         else:
             search_results = []
 
@@ -336,7 +346,7 @@ def admin_viewProfile(role,id):
             custDetails = Customer.query.filter_by(cust_id=id).one()
             return render_template("admin_viewProfile.html",role="Customer",details=custDetails)
         elif role=="Service":
-            serviceDetails = Service.query.filter_by(s_id=id).one()
+            serviceDetails = Service.query.filter_by(s_id=id).filter(Service.status==True).one()
             return render_template("admin_viewProfile.html",role="Service",details=serviceDetails)
         else:
             return redirect("/admin")
@@ -458,7 +468,7 @@ def deleteCustomer(id):
 
 @app.route("/customer")
 def customer():
-    servType = db.session.query(Service.pServiceType).distinct().all()
+    servType = db.session.query(Service.pServiceType).distinct().filter(Service.status==True).all()
     custHistory = (db.session.query(Professionals, Service_request, Service)
                 .join(Service_request, Service_request.prof_id == Professionals.prof_id)
                 .join(Service, Service.s_id == Service_request.s_id)
@@ -469,7 +479,7 @@ def customer():
 @app.route("/customer_serviceType/<serviceName>")
 def customer_service(serviceName):
     if session["role"]=="customer":
-        subServices = (db.session.query(Service).filter_by(pServiceType=serviceName).group_by(Service.sname).all())
+        subServices = (db.session.query(Service).filter_by(pServiceType=serviceName).filter(Service.status==True).group_by(Service.sname).all())
         #retieving history of customer 
         custHistory = (db.session.query(Professionals, Service_request, Service)
                     .join(Service_request, Service_request.prof_id == Professionals.prof_id)
@@ -497,8 +507,6 @@ def customer_subService(subService_title):
             return redirect(url_for('customer_service', serviceName=backService.pServiceType))
     else:
         return redirect("/login")
-
-
 
 @app.route("/book_service/<prof_id>/<subService_title>/<price>")
 def book_service(prof_id,subService_title,price):
@@ -587,7 +595,6 @@ def transHistory(id):
                 .filter(Service_request.cust_id == id).filter(Service_request.ppay==True)
                 .all())
     return render_template("transHistory.html",s=s)
-    
 
 #---------------------------------------extra------------------------------
 @app.route("/custSummary")
@@ -647,7 +654,7 @@ def customer_search():
                                 Service.sname.ilike(f'%{search_text}%'),
                                 Service.stime_req.ilike(f'%{search_text}%'),
                                 Service.pServiceType.ilike(f'%{search_text}%')
-                            )).all())
+                            )).filter(Service.status==True).all())
         elif search_by in ["Location","Pincode","Professional Name"]:
             
             search_results = (db.session.query(Professionals)
@@ -715,6 +722,11 @@ def customer_signUp():
 #================================PROFESSIONALS===========================================================================
 @app.route("/professional")
 def professional():
+    service_requests = Service_request.query.filter_by(prof_id=session["id"]).one()
+    if service_requests.service.status==False:
+        msg="This service you are associated with is temporarily down"
+    else:
+        msg=None
     cust_detail_today = (db.session.query(Customer,Service_request)
                  .join(Service_request, Customer.cust_id == Service_request.cust_id)
                  .join(Professionals, Professionals.prof_id == Service_request.prof_id)
@@ -726,7 +738,7 @@ def professional():
                  .join(Service, Service.s_id == Service_request.s_id)
                  .filter(Service_request.prof_id == session["id"]).filter(Service_request.date_of_req != date.today())
                  .all())    
-    return render_template("professionals.html",cust_detail_today=cust_detail_today,cust_detail_prev=cust_detail_prev)
+    return render_template("professionals.html",cust_detail_today=cust_detail_today,cust_detail_prev=cust_detail_prev,msg=msg)
 
 @app.route("/professional_search",methods=["GET","POST"])
 def professional_search():
@@ -752,7 +764,7 @@ def professional_search():
             search_results = query.join(Customer).filter(Customer.cphoneNo.ilike(f'%{search_text}%')).filter(Customer.is_allowed=="Allowed").all()
         else:
             search_results=[]
-
+        
         return render_template('professional_search.html', search_results=search_results,search_by=search_by,search_text=search_text)
     else:
         return render_template("professional_search.html")
@@ -866,7 +878,7 @@ def professional_signUp():
             flash("Please use valid email id")
             return redirect("/professional_signUp")
     else:
-        allServices=db.session.query(Service)
+        allServices=db.session.query(Service).filter(Service.status==True)
         return render_template("profsignUp.html",allServices=allServices)
 
 @app.route("/logout")

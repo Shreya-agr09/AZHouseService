@@ -1,0 +1,170 @@
+:root {
+    --primary:black;
+    --secondary: white;
+}
+
+h1,
+label {
+    color: var(--secondary);
+}
+
+.main {
+    padding:2%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 1%;
+    width: 75%;
+    margin: 4% auto auto auto;
+
+    background-color: var(--primary);
+}
+
+.left {
+    width: 40%;
+
+    margin-right: 16px;
+    border-radius: 2px;
+}
+
+.left img {
+    height: 100%;
+    width: 100%;
+    border-radius: 2px;
+    object-fit: cover;
+    opacity: 0.9;
+}
+
+form {
+    padding: 16px 16px 16px 56px;
+    width: 48%;
+    background-color: var(--primary);
+}
+
+form a {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+input[type=text],input[type=password],input[type=email],input[type=number] {
+    color: var(--primary);
+    outline:none;
+    border-radius: 2px;
+    width:48%;
+    margin: 8px;
+    padding: 2%;
+    border-color: transparent;
+    transition: box-shadow 0.3s ease;
+}
+
+input[type=text]:focus{
+    outline:none;
+    background-color: var(--secondary);
+}
+
+select {
+    color: var(--primary);
+    border-radius: 2px;
+    outline:none;
+    padding: 2%;
+    margin:16px;
+    border-color: transparent;
+}
+
+
+input[type=submit] {
+    color: var(--primary);
+    outline:none;
+    border-radius: 2px;
+    padding: 2%;
+    margin: 8px;
+    border-color: transparent;
+    width: 56%;
+    transition: box-shadow 0.3s ease;
+}
+
+input[type=text]:hover,
+input[type=password]:hover {
+    outline:none;
+    color: var(--primary);
+    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.6);
+}
+
+input[type=submit]:hover {
+    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.6);
+}
+
+.links {
+    color: var(--secondary);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 2%;
+    padding: 2%;
+    width: 60%;
+
+    justify-content: space-between;
+}
+
+a {
+    
+    position: relative;
+}
+
+
+textarea {
+    width: 72%; /* Full width of the container */
+    height: 16%; /* Adjust height as needed */
+    padding: 10px; /* Padding inside the textarea */
+    border: 1px solid #ccc; /* Border color and style */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #f9f9f9; /* Background color */
+    margin: 8px;
+    color: #333; /* Text color */
+    font-size: 16px; /* Font size */
+    resize: vertical; /* Allow vertical resizing only */
+    outline: none; /* Remove default focus outline */
+    box-shadow: none; /* Remove any box shadow */
+    transition: border-color 0.3s ease; /* Smooth transition for border */
+}
+
+/* Change border color on focus */
+textarea:focus {
+    border-color: #007bff; /* Change border color when focused */
+    background-color: #fff; /* Change background color if desired */
+}
+
+/* Placeholder styling */
+textarea::placeholder {
+    color: #aaa; /* Placeholder text color */
+    opacity: 1; /* Ensure opacity for visibility */
+}
+ a::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0px;
+    height: 2px;
+    width: 0;
+    background-color: white;
+    transition: width 0.4s ease;
+}
+ a:hover::before {
+    width: 100%;
+}
+
+#eyeicon,
+#ceyeicon {
+    width: 25px;
+    height: auto;
+
+}
+
+.password {
+    display: flex;
+    align-items: center;
+}
+p{
+    color:var(--secondary)
+}

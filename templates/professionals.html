@@ -19,6 +19,7 @@
         <a href="/prof_profile">Profile</a>
         <a href="/viewRejectedRequest">View rejected requests</a>
     </header>
+    {%if msg%}{{msg}}{%endif%}
     <div class="today_services">
         {%if cust_detail_today%}
         <h2>Today's Services</h2>

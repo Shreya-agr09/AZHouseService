@@ -4,33 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer SignUp</title>
+    <link rel="stylesheet" href="../static/form.css">
 </head>
 <body>
-    <h1>Customer SignUp</h1>
-    <form action="/customer_signUp" method="POST">
-        <label>Email Id(Username)</label>
-        <input type="input" name="cemail" required/><br>
+    <h1 style="color: var(--primary);">Welcome to AZhousehold</h1>
+    <div class="main">
+        <div class="left"><img src="../static/images/img1.jpg" alt=""></div>
+        <form action="/customer_signUp" method="POST">
+        <h1>Customer SignUp</h1>
+ 
+        <input type="text" name="cemail" placeholder="Email Id(Username)" required style="width:40%"/>
+        <input type="text" name="cname" placeholder="Full name" required style="width:40%"/><br>
+        <div class="password">
+        <input type="password" name="cpassword" placeholder="Password" id="password" required style="width:64%"/><br>
+        <img src="../static/images/closeeye.png"  id="eyeicon"></div>
+    
+        <textarea name="caddress" placeholder="Address" required></textarea><br>
+        
+        <input type="text" name="cpincode" placeholder="Pincode" required style="width:40%"/>
 
-        <label>Password</label>
-        <input type="password" name="cpassword" required/><br>
-
-        <label>Fullname</label>
-        <input type="input" name="cname" required/><br>
-
-        <label >Address</label>
-        <textarea name="caddress" required></textarea><br>
-        <label>Pincode</label>
-        <input type="input" name="cpincode" required/><br>
-        <label>Phone Number</label>
-        <input type="input" name="phoneNo" required/><br>
-        <button>Register</button><br>
+        <input type="number" name="phoneNo" placeholder="Phone Number" required style="width:40%"/><br>
+        <input type="submit" value="Register" style="width:96%"><br>
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>
         {% endif %}
         {% endwith %}
-        <a href="/login">Login Here</a>
+        <a href="/login" style="padding:2% 2% 0% 2%;">Login Here</a>
     </form>
+    </div>
 </body>
+<script>
+    let eyeicon = document.getElementById("eyeicon")
+    let password = document.getElementById("password")
+    eyeicon.onclick = function () {
+        if (password.type == "password") {
+            password.type = "text";
+            eyeicon.src = "../static/images/eye.png";
+        }
+        else {
+            password.type = "password";
+            eyeicon.src = "../static/images/closeeye.png";
+        }
+    }
+</script>
 </html>

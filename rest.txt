@@ -1,8 +1,5 @@
 things yet to do:
-
-do the same for service
 summary functionality
 show professionals on basis of rating 
-bookmark
 view password
 styling

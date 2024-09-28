@@ -4,23 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Service</title>
+    <link rel="stylesheet" href="../static/form.css">
 </head>
 <body>
-    <h1>New Service</h1>
+    <div class="main">
+        <div class="left"><img src="../static/images/img1.jpg" alt=""></div>
     <form action="/new_service" method="POST">
-        <label>Service Name</label>
-        <input type="input" name="servName" required/><br>
-
-        <label >Description</label>
-        <textarea name="sdesc"></textarea><br>
-        <label>Base Price</label>
-        <input type="number" name="baseprice" required/><br>
-        <label>Time Required(Approx)</label>
-        <input type="input" name="timereq" /><br>
-        <label>Service Type</label>
-        <input type="input" name="servtype" /><br>
-        <button>Add</button>
+        <h1>New Service</h1>   
+        
+        <input type="text" name="servName" placeholder="Service name" style="width:40%" required/>
+        
+        
+        <input type="number" name="baseprice" placeholder="Base Price" style="width:40%" required/>
+        
+        
+        <input type="text" name="timereq" placeholder="Time Required" style="width:40%"/>
+        
+        <input type="text" name="servtype" placeholder="Service Type" style="width:40%" />
+        <textarea name="sdesc" placeholder="Description"></textarea><br>
+        <div class="links">
+        <input type="submit" value="Add" >
+        <a href="/admin" style="padding:0%">Cancel</a></div>
     </form>
-    <a href="/admin"><button>Cancel</button></a><br>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}{{ message }}{% endfor %}
+        {% endif %}
+        {% endwith %}
+    
+    </div>
 </body>
 </html>

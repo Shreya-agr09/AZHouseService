@@ -49,6 +49,7 @@
             {% for prof, ser_rq, service in custHistory %}
                 <tr>
                     <td>{{ ser_rq.sr_id }}</td>
+                   
                     <td>{{ service.sname }}</td>
                     {%if prof.is_approved=="Accepted"%}
                     <td>{{ prof.pname }}</td>
