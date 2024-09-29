@@ -7,6 +7,7 @@
     <title>Customer search</title>
     <link rel="stylesheet" href="../static/style/nav.css">
     <link rel="stylesheet" href="../static/style/customer.css">
+    <link rel="stylesheet" href="../static/style/search.css">
 </head>
 
 <body>
@@ -39,7 +40,7 @@
                 <option value="Date Of Appointment">Date Of Appointment</option>
             </select>
             <input type="text" name="search_text" placeholder="Enter search text">
-            <button type="submit">Search</button>
+            <button type="submit"><img src="../static/images/search.png" alt=""></button>
         </form>
     </div>
 
@@ -120,17 +121,22 @@
                         {% endfor %}
                     </table>
                 {%else%}
-                    <h2>Please search specifically what you are looking for </h2>
+                    <div class="centermsg">
+                    <h2>Please search specifically what you are looking for </h2></div>
                 {%endif%}
             {% else %}
-                <h2>Please select a category to search</h2>
+            <div class="centermsg">
+                <h2>Please select a category to search</h2></div>
             {% endif %}
         {% else %}
-            <h2>No results found</h2>
+        <div class="centermsg">
+            <h2>No results found</h2></div>
         {% endif %}
     {% else %}
-        <h2>Nothing to show as of now. Kindly select a search category.</h2>
+    <div class="centermsg">
+        <h2>Nothing to show as of now. Kindly select a search category.</h2></div>
     {% endif %}
+    
     
 </body>
 

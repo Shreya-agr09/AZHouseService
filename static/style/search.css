@@ -1,0 +1,86 @@
+:root{
+    --primary:black;
+    --secondary:white;
+}
+/* Styling the search form */
+.search {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px;
+    background-color:#e5e5e5; /* Light background */
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+/* Label for the search dropdown */
+.search label {
+    margin-right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary) /* You can change this color to match your theme */
+}
+
+/* Search dropdown */
+.search select {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color:var(--secondary);
+    color: var(--primary);
+}
+
+/* Input for search text */
+.search input[type="text"] {
+    padding: 8px;
+    width: 200px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: var(--secondary);
+    color: var(--primary);
+}
+
+/* Search button */
+.search button {
+    background-color:var(--primary); /* Primary theme color */
+    border: none;
+    padding: 4px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+
+.search button img {
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+/* Hover effect on the button */
+.search button:hover {
+    box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.6);/* Secondary hover color */
+}
+.centermsg{
+    display: flex;
+    justify-content: center;  /* Center horizontally */
+    align-items: center;      /* Center vertically */
+    height: 60vh;             /* Adjust height to fill a portion of the page */
+    text-align: center;      
+}
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    .search {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .search select,
+    .search input[type="text"],
+    .search button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

@@ -1,59 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Profile</title>
     <link rel="stylesheet" href="../static/style/nav.css">
+    <link rel="stylesheet" href="../static/style/profile.css">
 </head>
-<style>
-    .main{
-        display:flex;
-        flex-direction: row;
-    }
-    .left{
-        width:50%;
-    }
-    .right{
-        width:50%;
-    }
-</style>
+
 <body>
     <header>
-        <span>Welcome to Professional</span>
-        <ul>
-            <a href="/professional">Home</a>
-            <a href="//professional_search">Search</a>
-            <a href="/summary">Summary</a>
-            <a href="/logout">Logout</a>
-        </ul>
-        <a href="/prof_profile">Profile</a>
+        <h2>Welcome to Professional</h2>
+                <ul>
+                    <a href="/professional">Home</a>
+                    <a href="/professional_search">Search</a>
+                    <a href="/summary">Summary</a>
+                    <a href="/logout">Logout</a>
+                </ul>
+                <ul>
+                    <a href="/prof_profile">Profile</a>
+                    <a href="/viewRejectedRequest">View rejected requests</a>
+                </ul>
     </header>
     <div class="main">
-    
-    <div class="left">
-        <h1>{{p.pname}}</h1>
-        <a href="/updateProfProfile/{{p.prof_id}}" type="Button">Edit Profile</a><a href="/deleteProfProfile" type="Button">Delete Profile</a>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            {{ message }}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    <div class="right">
-        <h3>Username(emmail)    </h3>{{p.pemail}}
-        <h3>Service Name    </h3>{{p.pserviceName}}
-        <h3>Category    </h3>{{category.pServiceType}}
-        <h3>Experience  </h3>{{p.pexp}}
-        <h3>Address </h3>{{p.paddress}}
-        <h3>PinCode </h3>{{p.ppincode}}
-        <h3>Contact Number  </h3>{{p.pphoneNo}}
 
+        <div class="left">
+            <img src="../static/images/profile.png" alt="Profile">
+            <h1>{{p.pname}}</h1>
+            <div class="link">
+                <a href="/updateProfProfile/{{p.prof_id}}" type="Button">Edit Profile</a>
+                <a href="/deleteProfProfile" type="Button">Delete Profile</a>
+            </div>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div class="right">
+            <div class="subright">
+                <span>Username(email)</span>
+                <span>Service Name</span>
+                <span>Category</span>
+                <span>Experience</span>
+                <span>Address</span>
+                <span>PinCode</span>
+                <span>Contact Number</span>
+            </div>
+            <div class="subleft">
+                <span>{{p.pemail}}</span>
+                <span>{{p.pserviceName}}</span>
+                <span>{{category.pServiceType}}</span>
+                <span>{{p.pexp}}</span>
+                <span>{{p.paddress}}</span>
+                <span>{{p.ppincode}}</span>
+                <span>{{p.pphoneNo}}</span>
+            </div>
+
+        </div>
     </div>
-</div>
 </body>
+
 </html>

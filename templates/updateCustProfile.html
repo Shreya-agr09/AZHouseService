@@ -4,29 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer SignUp</title>
+    <link rel="stylesheet" href="../static/style/form.css">
+    <link rel="stylesheet" href="../static/style/nav.css">
 </head>
 <body>
-    <h1>Update Profile</h1>
+    <header>
+        <h2>Welcome to Customer</h2>
+        <ul>
+            <a href="/customer">Home</a>
+            <a href="/customer_search">Search</a>
+            <a href="/custSummary">Summary</a>
+            <a href="/logout">Logout</a>
+        </ul>
+        <ul style="width:24%;">
+            <a href="/cust_profile">Profile</a>
+            <a href="transHistory/{{session['id']}}">Transaction History</a>
+        </ul>
+    </header>
+    <div class="main" >
+        <div class="left"><img src="../static/images/img1.jpg" alt=""></div>
     <form action="/updateCustProfile/{{c.cust_id}}" method="POST">
-        <label>Email Id(Username)</label>
-        <input type="input" name="cemail" value="{{c.cemail}}" disabled /><br>
+        <h1 style="margin:1%;">Update Profile</h1>
+        
+        <input style="width:40%" type="text" name="cemail" value="{{c.cemail}}" disabled />
 
-        <label>Fullname</label>
-        <input type="input" name="cname" value="{{c.cname}}"/><br>
+        <input style="width:40%" type="text" name="cname" value="{{c.cname}}"/><br>
 
-        <label >Address</label>
-        <textarea name="caddress">{{c.caddress}}</textarea><br>
-        <label>Pincode</label>
-        <input type="input" name="cpincode" value="{{c.cpincode}}" /><br>
-        <label>Phone Number</label>
-        <input type="input" name="cphoneNo" value="{{c.cphoneNo}}" /><br>
-        <button>Update</button><br>
+
+        <textarea style="width:88%;" name="caddress" >{{c.caddress}}</textarea><br>
+
+        <input style="width:40%" type="text" name="cpincode" value="{{c.cpincode}}" />
+
+        <input style="width:40%" type="text" name="cphoneNo" value="{{c.cphoneNo}}" /><br>
+        <input style="width:96%" type="submit" value="Update">br>
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>
         {% endif %}
         {% endwith %}
-    </form>
+    </form></div>
 </body>
 </html>

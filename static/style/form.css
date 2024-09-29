@@ -57,7 +57,14 @@ input[type=text],input[type=password],input[type=email],input[type=number] {
     border-color: transparent;
     transition: box-shadow 0.3s ease;
 }
-
+input[disabled] {
+    background-color: #f0f0f0; /* Light gray background */
+    color: #666;              /* Text color */
+    border: 1px solid #ccc;    /* Border styling */
+    padding: 10px;             /* Padding */
+    border-radius: 5px;        /* Rounded corners */
+    cursor: not-allowed;       /* Show 'not-allowed' cursor */
+}
 input[type=text]:focus{
     outline:none;
     background-color: var(--secondary);
@@ -85,6 +92,7 @@ input[type=submit] {
 }
 
 input[type=text]:hover,
+input[type=number]:hover,
 input[type=password]:hover {
     outline:none;
     color: var(--primary);
@@ -126,13 +134,14 @@ textarea {
     resize: vertical; /* Allow vertical resizing only */
     outline: none; /* Remove default focus outline */
     box-shadow: none; /* Remove any box shadow */
-    transition: border-color 0.3s ease; /* Smooth transition for border */
+    transition: box-shadow 0.3s ease;
 }
 
 /* Change border color on focus */
-textarea:focus {
-    border-color: #007bff; /* Change border color when focused */
-    background-color: #fff; /* Change background color if desired */
+textarea:focus,textarea:hover {
+    outline:none;
+    color: var(--primary);
+    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.6);
 }
 
 /* Placeholder styling */

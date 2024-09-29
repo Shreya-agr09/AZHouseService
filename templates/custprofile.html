@@ -1,24 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Profile</title>
     <link rel="stylesheet" href="../static/style/nav.css">
-    <link rel="stylesheet" href="../static/style/customer.css">
+    <link rel="stylesheet" href="../static/style/profile.css">
+
 </head>
-<style>
-    .main{
-        display:flex;
-        flex-direction: row;
-    }
-    .left{
-        width:50%;
-    }
-    .right{
-        width:50%;
-    }
-</style>
+
 <body>
     <header>
         <h2>Welcome to Customer</h2>
@@ -29,31 +20,48 @@
             <a href="/logout">Logout</a>
         </ul>
         <ul style="width:24%;">
-        <a href="/cust_profile">Profile</a>
-        <a href="transHistory/{{session['id']}}">Transaction History</a></ul>
-        </header>
-    <div class="main">
-    
-    <div class="left">
-        <h1>{{c.cname}}</h1>
-        <a href="/updateCustProfile/{{c.cust_id}}" type="Button">Edit Profile</a><a href="/deleteCustProfile" type="Button">Delete Profile</a>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            {{ message }}
-            {% endfor %}
+            <a href="/cust_profile">Profile</a>
+            <a href="transHistory/{{session['id']}}">Transaction History</a>
         </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    <div class="right">
-        <h5>Username(emmail)</h5>{{c.cemail}}
-        <h5>Address</h5>{{c.caddress}}
-        <h5>PinCode</h5>{{c.cpincode}}
-        <h5>Contact Number</h5>{{c.cphoneNo}}
+    </header>
 
+    <div class="main">
+
+        <div class="left">
+            <img src="../static/images/profile.png" alt="Profile">
+            <h1>{{c.cname}}</h1>
+            <div class="link">
+                <a href="/updateCustProfile/{{c.cust_id}}" type="Button">Edit Profile</a><a href="/deleteCustProfile"
+                    type="Button">Delete Profile</a>
+            </div>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div class="right">
+
+
+            <div class="subright">
+                <span>Username(emmail)</span>
+                <span>Address</span>
+                <span>PinCode</span>
+                <span>Contact Number</span>
+            </div>
+            <div class="subleft">
+                <span>{{c.cemail}}</span>
+                <span>{{c.caddress}}</span>
+                <span>{{c.cpincode}}</span>
+                <span>{{c.cphoneNo}}</span>
+            </div>
+
+        </div>
     </div>
-</div>
 </body>
+
 </html>

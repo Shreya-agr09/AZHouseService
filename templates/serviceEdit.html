@@ -1,26 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Service</title>
+    <link rel="stylesheet" href="../static/style/nav.css">
+    <link rel="stylesheet" href="../static/style/form.css">
 </head>
-<body>
-    <h1>Update Service</h1>
-    <form action="/update_service/{{s.s_id}}" method="POST">
-        <label>Service Name</label>
-        <input type="input" name="servName" value="{{s.sname}}" disabled /><br>
+<style>
+    form a {
+        color: var(--primary);
+        background-color: var(--secondary);
+        outline: none;
+        border-radius: 2px;
+        padding: 2%;
+        margin: 8px;
+        border-color: transparent;
+        width: 56%;
+        transition: box-shadow 0.3s ease;
+    }
+</style>
 
-        <label >Description</label>
-        <textarea name="sdesc">{{s.sdescription}}</textarea><br>
-        <label>Base Price</label>
-        <input type="number" name="baseprice" value="{{ s.sbaseprice }}"/><br>
-        <label>Time Required(Approx)</label>
-        <input type="input" name="timereq" value="{{s.stime_req}}"/><br>
-        <label>Service Type</label>
-        <input type="input" name="servtype" value="{{s.pServiceType}}" /><br>
-        <button>Update</button>
-    </form>
-    <a href="/admin"><button>Cancel</button></a><br>
+<body>
+    <header>
+        <h2>Welcome Admin</h2>
+        <ul>
+            <a href="/admin">Home</a>
+            <a href="/admin_search">Search</a>
+            <a href="/admin_summary">Summary</a>
+           
+        </ul>
+        <ul style="width:24%;justify-content: end;"><a href="/logout">Logout</a> </ul>
+    </header>
+
+
+    <div class="main">
+        <div class="left"><img src="../static/images/img1.jpg" alt=""></div>
+        <form action="/update_service/{{s.s_id}}" method="POST">
+            <h1>Update Service</h1>
+
+            <input style="width:40%;" type="text" name="servName" value="{{s.sname}}" disabled />
+
+            <input style="width:40%;" type="number" name="baseprice" value="{{ s.sbaseprice }}" /><br>
+
+            <textarea style="width:90%;" name="sdesc">{{s.sdescription}}</textarea><br>
+
+
+            <input style="width:40%;" type="text" name="timereq" value="{{s.stime_req}}" />
+
+            <input style="width:40%;" type="text" name="servtype" value="{{s.pServiceType}}" /><br>
+            <input style="width:40%;" type="submit" value="Update">
+            <a href="/admin">Cancel</a><br>
+        </form>
+    </div>
 </body>
+
 </html>

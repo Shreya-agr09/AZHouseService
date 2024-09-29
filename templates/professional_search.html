@@ -7,6 +7,7 @@
     <title>Professional Search</title>
     <link rel="stylesheet" href="../static/style/nav.css">
     <link rel="stylesheet" href="../static/style/admin.css">
+    <link rel="stylesheet" href="../static/style/search.css">
 </head>
 <style>
     th,td{
@@ -27,6 +28,7 @@
                     <a href="/viewRejectedRequest">View rejected requests</a>
                 </ul>
     </header>
+    <div class="search">
     <form action="/professional_search" method="POST">
         <label for="search_by">Search by:</label>
         <select name="search_by" id="search_by">
@@ -45,8 +47,9 @@
         <label for="search_text">Search Text:</label>
         <input type="text" id="search_text" name="search_text" placeholder="Enter search term (e.g., yyyy-mm-dd)" />
 
-        <button type="submit">Search</button>
+        <button type="submit"><img src="../static/images/search.png" alt=""></button>
     </form>
+</div>
 
     <!-- rendering search results -->
     {%if search_by%}
@@ -95,7 +98,8 @@
         <p>No search results found.</p>
         {% endif %}
     {%else%}
-    <h2>Nothing to show as of now please slect values </h2>
+    <div class="centermsg">
+    <h2>Nothing to show as of now please slect values </h2></div>
     {%endif%}
 </body>
 

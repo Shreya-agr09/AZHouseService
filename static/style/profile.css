@@ -1,0 +1,87 @@
+:root{
+    --primary:black;
+    --secondary:white;
+}
+.main{
+    display:flex;
+    flex-direction: row;
+    padding:2%;
+    height:64vh;
+
+}
+.left{
+    width:30%;
+    padding:4%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.left img{
+    height:40%;
+    border-radius: 50%;
+}
+.link{
+    width:64%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-left:2%;
+    align-items: space-between;
+
+}
+.link a{
+    margin:2%;
+    padding:4%;
+    text-decoration: none;
+    position: relative;
+    color:var(--primary)
+}
+.link a::before{
+    content:'';
+    height:2px;
+    width:0px;
+    position: absolute;
+    bottom:0px;
+    background-color:var(--primary);
+    transition: width 0.4s ease;
+
+}
+.link a:hover::before{
+    width:90%;
+}
+.right{
+    width:50%;
+    display: flex;
+    flex-direction: row;
+    padding-top:8%;
+    flex-wrap: wrap;
+    align-items: start;
+}
+.subright{
+    width:50%;
+    display: flex;
+
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: start;
+}
+.subright span{
+    padding:2%;
+    margin:2%;
+    text-decoration: bold;
+    font-size: 20px;
+}
+.subleft{
+    width:50%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: start;
+}
+.subleft span{
+    padding:2%;
+    margin:2%;
+    font-size: 20px;
+}

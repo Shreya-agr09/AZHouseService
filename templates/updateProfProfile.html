@@ -1,45 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Profile</title>
+    <link rel="stylesheet" href="../static/style/nav.css">
+    <link rel="stylesheet" href="../static/style/form.css">
 </head>
+
 <body>
-    <h1>Update Profile</h1>
-    <form action="/updateProfProfile/{{p.prof_id}}" method="POST">
-        <label>Email Id(Username)</label>
-        <input type="input" name="cemail" value="{{p.pemail}}" disabled/><br>
+    <header>
+        <h2>Welcome to Professional</h2>
+        <ul>
+            <a href="/professional">Home</a>
+            <a href="/professional_search">Search</a>
+            <a href="/summary">Summary</a>
+            <a href="/logout">Logout</a>
+        </ul>
+        <ul>
+            <a href="/prof_profile">Profile</a>
+            <a href="/viewRejectedRequest">View rejected requests</a>
+        </ul>
+    </header>
 
-        <label>Fullname</label>
-        <input type="input" name="name" value="{{p.pname}}" /><br>
+    <div class="main">
+        <div class="left"><img src="../static/images/img1.jpg" alt=""></div>
+        <form action="/updateProfProfile/{{p.prof_id}}" method="POST">
+            <h1 style="margin:1%;">Update Profile</h1>
+           
+            <input style="width:40%;"  type="text" name="cemail" value="{{p.pemail}}" disabled />
 
-        <label>Service Name</label>
-        
-            <select name="serviceName" value="serviceName" disabled>
-                {%for i in allServices%}
-                <option value="{{i.sname}}">{{i.sname}}</option>
-                {%endfor%}
-            </select><br>
+            
+            <input style="width:40%;"  type="text" name="name" value="{{p.pname}}" /><br>
 
-<!-- attach file here  -->
-        <label>Experience(in years)</label>
-        <input type="input" name="exp" value="{{p.pexp}}"/><br>
+            <!-- attach file here  -->
+            <label>Experience</label>
+            <input style="width:40%;"  type="text" name="exp" value="{{p.pexp}}" /><br>
 
-        <label >Address</label>
-        <textarea name="address">{{p.paddress}}</textarea><br>
+           
+            <textarea name="address" style="width:90%;">{{p.paddress}}</textarea><br>
 
-        <label>Pincode</label>
-        <input type="input" name="pincode" value="{{p.ppincode}}"/><br>
+         
+            <input style="width:40%;" type="text" name="pincode" value="{{p.ppincode}}" />
 
-        <label>Phone Number</label>
-        <input type="input" name="phoneNo" value="{{p.pphoneNo}}"/><br>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>
-        {% endif %}
-        {% endwith %}
-        <input type="submit" value="Update">
-    </form>
+            
+            <input  style="width:40%;" type="text" name="phoneNo" value="{{p.pphoneNo}}" /><br>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>
+            {% endif %}
+            {% endwith %}
+            <input  style="width:90%;" type="submit" value="Update">
+        </form>
+    </div>
 </body>
+
 </html>
