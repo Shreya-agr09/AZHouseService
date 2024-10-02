@@ -1,5 +1,4 @@
 things yet to do:
 summary functionality
 show professionals on basis of rating 
-view password
-styling
+create home page

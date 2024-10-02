@@ -1,0 +1,89 @@
+
+.main{
+    display:flex;
+    flex-direction: row;
+    height:100%;
+    justify-content: space-between;
+}
+form{
+    width:100%;
+}
+.left{
+    display:flex;
+    flex-direction:column;
+    width:50%;
+    border:2px solid white;
+    border-radius: 2%;  
+    justify-content: center; 
+}
+.main{
+    margin:0px;
+}
+.leftcontent{
+    display:flex;
+    flex-direction:row;
+    justify-content: space-between;
+   
+    padding: 6% 2%;
+ 
+}
+.subleft,.subright{
+    display: flex;
+    flex-direction: column;
+    padding:4%;
+}
+.subleft{
+    font-weight: bold;
+}
+.subright span, .subleft span{
+    margin:1%;
+    padding:1%;
+    color:white;
+}
+.subright span{
+    font-size: 16px;
+}
+.left h2{
+    color:white;
+}
+.right{
+    align-items: flex-end;
+    width:50%;
+}
+button{
+    color: var(--primary);
+    outline:none;
+    border-radius: 2px;
+    padding: 2%;
+    margin: 8px;
+    border-color: transparent;
+    width: 56%;
+    transition: box-shadow 0.3s ease;
+}
+button:hover {
+    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.6);
+}
+/* star styling */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 2em;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.star-rating input[type="radio"]:checked~label {
+    color: #ffc107;
+}
+
+.star-rating label:hover,
+.star-rating label:hover~label {
+    color: #ffc107;
+}

@@ -47,7 +47,7 @@ form a {
     text-decoration: none;
 }
 
-input[type=text],input[type=password],input[type=email],input[type=number] {
+input[type=text],input[type=password],input[type=email],input[type=number],input[type=date] {
     color: var(--primary);
     outline:none;
     border-radius: 2px;
@@ -93,6 +93,7 @@ input[type=submit] {
 
 input[type=text]:hover,
 input[type=number]:hover,
+input[type=date]:hover,
 input[type=password]:hover {
     outline:none;
     color: var(--primary);

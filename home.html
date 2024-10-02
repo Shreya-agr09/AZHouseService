@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aZhousehold Services</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .hero-section {
+            background-image: url('path-to-your-uploaded-image.png'); /* Use your uploaded background image */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay for text contrast */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .login-button {
+            padding: 15px 30px;
+            background-color: #ff6347; /* Tomato color */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: #e5533d; /* Darker shade on hover */
+        }
+
+        .services {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .services h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .service-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .service-item {
+            background-color: #f0f0f0; /* Light background for service items */
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+            flex: 0 1 calc(25% - 40px); /* Responsive item sizing */
+            text-align: center;
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .service-item:hover {
+            transform: scale(1.05); /* Slight grow effect on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero-section">
+        <div class="overlay">
+            <div class="container">
+                <h1>aZhousehold Services</h1>
+                <p>Your one-stop solution for all household needs</p>
+                <a href="/login" class="login-button">Login</a>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>

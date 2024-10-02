@@ -5,79 +5,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Remarks</title>
-    <style>
-        .star-rating {
-            display: flex;
-            flex-direction: row-reverse;
-        }
+    <link rel="stylesheet" href="../static/style/nav.css">
+    <link rel="stylesheet" href="../static/style/remarks.css">
+    <link rel="stylesheet" href="../static/style/form.css">
 
-        .star-rating input[type="radio"] {
-            display: none;
-        }
 
-        .star-rating label {
-            font-size: 2em;
-            color: #ccc;
-            cursor: pointer;
-        }
-
-        .star-rating input[type="radio"]:checked~label {
-            color: #ffc107;
-        }
-
-        .star-rating label:hover,
-        .star-rating label:hover~label {
-            color: #ffc107;
-        }
-    </style>
 </head>
 
 <body>
     <header>
-        <span>Welcome to Customer</span>
+        <h2>Welcome to Customer</h2>
         <ul>
-            <li><a href="/home">Home</a></li>
-            <li><a href="/search">Search</a></li>
-            <li><a href="/summary">Summary</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <a href="/customer">Home</a>
+            <a href="/customer_search">Search</a>
+            <a href="/custSummary">Summary</a>
+            <a href="/logout">Logout</a>
         </ul>
-        <a href="/profile">Profile</a>
+        <ul style="width:24%;">
+            <a href="/cust_profile">Profile</a>
+            <a href="transHistory/{{session['id']}}">Transaction History</a>
+        </ul>
     </header>
     <!--Main Body-->
-    <h2>Service remarks
-        {%for sr,s,p in results%}
-        <h4>Request Id:{{sr.sr_id}}</h4>
-        <ul>
-            <li>Service name : {{s.sname}}</li>
-            <li>Description : {{s.sdescription}}</li>
-            <li>Date of Request : {{sr.date_of_req}}</li>
-            <li>Professional Id : {{p.prof_id}}</li>
-            <li>Professional Name : {{p.pname}}</li>
-            <li>Contact Number : {{p.pphoneNo}}</li>
-        </ul>
-        <form action="/closeService/{{sr.sr_id}}" method="POST">
-            <label>Remarks (if any)</label>
-            <textarea name="remarks"></textarea><br>
-            <!-- raiting form -->
-            <label>Rating</label>
-            <div class="star-rating">
-                <input type="radio" name="rating" id="5-stars" value="5" />
-                <label for="5-stars" class="star">&#9733;</label>
-                <input type="radio" name="rating" id="4-stars" value="4" />
-                <label for="4-stars" class="star">&#9733;</label>
-                <input type="radio" name="rating" id="3-stars" value="3" />
-                <label for="3-stars" class="star">&#9733;</label>
-                <input type="radio" name="rating" id="2-stars" value="2" />
-                <label for="2-stars" class="star">&#9733;</label>
-                <input type="radio" name="rating" id="1-star" value="1" />
-                <label for="1-star" class="star">&#9733;</label>
+    {%for sr,s,p in results%}
+    <div class="main">
+        <div class="left">
+            <h2 align="center">Service Details</h2>
+            <div class="leftcontent">
+                <div class="subleft">
+                    <span>Request Id</span>
+                    <span>Service name</span>
+                    <span>Date of Request</span>
+                    <span>Professional Id</span>
+                    <span>Professional Name</span>
+                    <span>Contact Number</span>
+                    <span>Description</span>
+                </div>
+                <div class="subright">
+                    <span>{{sr.sr_id}}</span>
+                    <span>{{s.sname}}</span>
+                    <span>{{sr.date_of_req}}</span>
+                    <span>{{p.prof_id}}</span>
+                    <span>{{p.pname}}</span>
+                    <span>{{p.pphoneNo}}</span>
+                    <span>{{s.sdescription}}</span>
+                </div>
             </div>
-            <br>
-            {%endfor%}
-            <button>Submit</button>
-            <button onclick="window.history.back();">Close</button>
+        </div>
+
+        <div class="right">
+            <h1>Service Remarks</h1>
+            <form action="/closeService/{{sr.sr_id}}" method="POST">
+                <label>Remarks (if any)</label>
+                <textarea name="remarks"></textarea>
+                <!-- raiting form -->
+                <label>Rating</label>
+                <div class="star-rating">
+                    <input type="radio" name="rating" id="5-stars" value="5" />
+                    <label for="5-stars" class="star">&#9733;</label>
+                    <input type="radio" name="rating" id="4-stars" value="4" />
+                    <label for="4-stars" class="star">&#9733;</label>
+                    <input type="radio" name="rating" id="3-stars" value="3" />
+                    <label for="3-stars" class="star">&#9733;</label>
+                    <input type="radio" name="rating" id="2-stars" value="2" />
+                    <label for="2-stars" class="star">&#9733;</label>
+                    <input type="radio" name="rating" id="1-star" value="1" />
+                    <label for="1-star" class="star">&#9733;</label>
+                </div>
+                <input type="submit" value="Submit">
+                <button onclick="window.history.back();">Close</button>
+        </div>
+   
+        {%endfor%}
         </form>
-    </h2>
+        </h2>
+    </div>
 </body>
 
 </html>

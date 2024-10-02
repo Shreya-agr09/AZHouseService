@@ -4,16 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment</title>
+    <link rel="stylesheet" href="../static/style/nav.css">
+    <link rel="stylesheet" href="../static/style/form.css">
 </head>
 <body>
+    <header>
+        <h2>Welcome to Customer</h2>
+        <ul>
+            <a href="/customer">Home</a>
+            <a href="/customer_search">Search</a>
+            <a href="/custSummary">Summary</a>
+            <a href="/logout">Logout</a>
+        </ul>
+        <ul style="width:24%;">
+        <a href="/cust_profile">Profile</a>
+        <a href="transHistory/{{session['id']}}">Transaction History</a></ul>
+        </header>
+    <div class="main">
+        <div class="left"><img src="../static/images/img1.jpg" alt=""></div>
     <form action="/payment/{{id}}" method="POST">
-        <label>Card Number:</label>
-        <input type="number" name="cardnum">
-        <label>Expiry</label>
-        <input type="date" name="expiry">
-        <label>CVV</label>
-        <input type="number" name="CVV">
-        <input type="submit" value="submit">
-    </form>
+        <h1>Transaction</h1>
+      
+        <input type="text" name="cardnum" placeholder="Card Number" style="width:90%;" minlength="12" maxlength="12" oninvalid="this.setCustomValidity('Card number must be of exactly 12 digits.')"
+        oninput="this.setCustomValidity('')" required><br>
+        
+        <input type="text" style="width:40%;" id="date" placeholder="Select a date" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" required>
+
+       
+        <input type="text" name="CVV" style="width:40%;" placeholder="CVV" minlength="3" maxlength="3"  oninvalid="this.setCustomValidity('Incorrect CVV')"
+        oninput="this.setCustomValidity('')"  required><br>
+        <input type="text" name="cardname" placeholder="Full Name" style="width:90%;"><br>
+        <input type="submit" style="width:90%;" value="submit">
+    </form></div>
 </body>
 </html>
