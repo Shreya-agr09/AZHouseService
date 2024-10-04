@@ -1,4 +1,25 @@
 things yet to do:
 summary functionality
 show professionals on basis of rating 
-create home page
+we can show total money earned in professional dashboad 
+and also avg rating 
+
+admin:
+
+    status count
+    date count
+    prof order count
+    prof status count
+    .customer order count
+    .customer status count
+    service count
+    .category count
+    -- All must include null value also specially rating one
+    and do one thig for graph even any customer haven't placed any order it must show in graph 
+
+professionals
+    status count
+    date count
+customer
+    service count
+    status count

@@ -26,7 +26,13 @@
         
         
         <input type="number" name="baseprice" placeholder="Base Price" style="width:40%" required/>
-        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="msg">
+        {% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>
+        {% endif %}
+        {% endwith %}
+    
         
         <input type="text" name="timereq" placeholder="Time Required" style="width:40%"/>
         
@@ -36,11 +42,6 @@
         <input type="submit" value="Add" >
         <a href="/admin" style="padding:0%">Cancel</a></div>
     </form>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        {% for message in messages %}{{ message }}{% endfor %}
-        {% endif %}
-        {% endwith %}
     
     </div>
 </body>

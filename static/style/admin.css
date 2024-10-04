@@ -1,6 +1,6 @@
 table {
     width: 70%;
-    border-collapse: separate; /* Change from collapse to separate for border-radius to work */
+    border-collapse: collapse; /* Change from collapse to separate for border-radius to work */
     border-spacing: 0; /* Avoid gaps between cells */
     border: 2px solid #333; /* Apply border around the table */
     border-radius: 10px; /* Add border-radius for rounded corners */
@@ -14,7 +14,6 @@ table {
 th, td {
     padding: 8px 40px;
 }
-
 th {
     background-color: #333;
     color: #fff;

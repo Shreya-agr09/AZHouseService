@@ -79,6 +79,7 @@ class Service_request(db.Model):
 db.create_all()
 
 #rendering all templates 
+@app.route("/")
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -265,43 +266,62 @@ def admin_search():
 
 @app.route("/admin_summary")
 def admin_summary():
+    #making status wise graph
     data = db.session.query(Service_request.status,func.count(Service_request.status).label('count')).group_by(Service_request.status).all()
     service_status,service_count=[],[]
     for status,count in data:
         service_status.append(status)
         service_count.append(count)
-    print(service_status,service_count)
     plt.bar(service_status, service_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
     plt.title('Service Requests Summary')
     plt.ylabel('Number of Requests')
-    plt.savefig('service_requests_summary.png')
+    plt.savefig('static/images/graph/service_requests_summary.png')
     plt.clf()
-   
-    #making rating wise plot graph
-    #ratingdata = db.session.query(Service_request.srating,func.count(Service_request.srating).label('count')).group_by#(Service_request.srating).all()
-    ratingdata = db.session.query(Service_request.srating).all()
-    # rating,count=[],[]
-    # for id,count in ratingdata:
-    #     rating.append(id)
-    #     count.append(count)
-    pos=0
-    neg=0
-    for i in ratingdata:
-        print(i)
-        if i[0]>3:
-            pos+=1
+
+    profstatus= db.session.query(Professionals.is_approved,func.count(Professionals.is_approved).label('count')).group_by(Professionals.is_approved).all()
+    service_status,service_count=[],[]
+    for status,count in profstatus:
+        service_status.append(status)
+        service_count.append(count)
+    plt.bar(service_status, service_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Professionals Status')
+    plt.ylabel('Number of professionals')
+    plt.savefig('static/images/graph/prof_status.png')
+    plt.clf()
+
+    custstatus= db.session.query(Customer.is_allowed,func.count(Customer.is_allowed).label('count')).group_by(Customer.is_allowed).all()
+    service_status,service_count=[],[]
+    for status,count in custstatus:
+        service_status.append(status)
+        service_count.append(count)
+    plt.bar(service_status, service_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Customer Status')
+    plt.ylabel('Number of Customers')
+    plt.savefig('static/images/graph/cust_status.png')
+    plt.clf()
+
+    # Fetch the rating counts, including null values
+    sdata = db.session.query(Service_request.srating, func.count(Service_request.srating).label('count')).group_by(Service_request.srating).all()
+    service_srating = ['1', '2', '3', '4', '5']
+    service_count = [0] * len(service_srating)  # Start with zero counts for each rating
+    for srating, count in sdata:
+        print(srating, count)
+        if srating is None:
+            pass# Increment the count for 'null'
         else:
-            neg+=1
-    ratings=[pos/len(ratingdata),neg/len(ratingdata),100-pos/len(ratingdata)-neg/len(ratingdata)]
+            idx = int(srating) - 1  # Get the index for ratings 1-5
+            service_count[idx] += count  # Increment the respective rating count
+    print(service_srating, service_count)
+    # Define the colors for each rating
+    colors = ['#66b3ff', '#99ff99', '#ff9999', '#7ec3bf', '#ffcc99', '#cccccc']
 
-
-    labels = ['Positive', 'Negative','Not given yet']
-    plt.pie(ratings, labels=labels, autopct='%1.1f%%', startangle=90)
-    centre_circle = plt.Circle((0, 0), 0.70, fc='white')
-    plt.gca().add_artist(centre_circle)
-    plt.title('Overall Customer Ratings')
-    
-    plt.savefig('customer_ratings_summary.png')
+    # Plot the data
+    plt.bar(service_srating, service_count, color=colors)
+    plt.title('Service Requests Summary')
+    plt.ylabel('Number of Requests')
+    plt.xlabel('Ratings')
+    plt.xticks(ticks=range(len(service_srating)), labels=service_srating)
+    plt.savefig('static/images/graph/rating_summary.png')
     plt.clf()
 
     #making dataewise plots
@@ -310,30 +330,56 @@ def admin_summary():
     for id,count in datedata:
         date_d.append(id)
         prof_count.append(count)
-    print(date_d,prof_count)
     plt.bar(date_d, prof_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
     plt.title('Professionals no. of order')
     plt.ylabel('Number of Orders')
     plt.xlabel('Date')
-    plt.savefig('date_analysis.png')
+    plt.savefig('static/images/graph/date_analysis.png')
     plt.clf()
 
 
     #making professional wise graph
-    profdata = db.session.query(Professionals.pemail,func.count(Service_request.prof_id).label('count')).join(Service_request, Professionals.prof_id == Service_request.prof_id).group_by(Professionals.pemail).all()
+    profdata =db.session.query(Professionals.pemail,func.count(Service_request.prof_id).label('count')).outerjoin(Service_request, Professionals.prof_id == Service_request.prof_id).group_by(Professionals.pemail).all()
+
     prof_id,prof_count=[],[]
     for id,count in profdata:
         prof_id.append(id)
         prof_count.append(int(count))
-    print(prof_id,prof_count)
     plt.bar(prof_id, prof_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
     plt.title('Professionals no. of order')
     plt.ylabel('Number of Orders')
     plt.xlabel('ID of Professional')
-    plt.savefig('prof_analysis.png')
+    plt.savefig('static/images/graph/prof_analysis.png')
     plt.clf()
 
-    return "your image is saved successfully"
+    #making service name wise graph
+    servdata = db.session.query(Service.sname,func.count(Service_request.s_id).label('count')).join(Service_request, Service.s_id == Service_request.s_id).group_by(Service.sname).all()
+    serv_id,serv_count=[],[]
+    for id,count in servdata:
+        serv_id.append(id)
+        serv_count.append(int(count))
+    plt.bar(serv_id, serv_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Service vs Number of order')
+    plt.ylabel('Number of Orders')
+    plt.xlabel('Service name ')
+    plt.savefig('static/images/graph/ServName_analysis.png')
+    plt.clf()
+
+   #making customer wise graph
+    custdata = db.session.query(Customer.cemail,func.count(Service_request.cust_id).label('count')).outerjoin(Service_request, Customer.cust_id == Service_request.cust_id).group_by(Customer.cemail).all()
+    cust_id,cust_count=[],[]
+    for id,count in custdata:
+        cust_id.append(id)
+        cust_count.append(int(count))
+    plt.bar(cust_id, cust_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Customer no. of order')
+    plt.ylabel('Number of Orders')
+    plt.xlabel('ID of Customer')
+    plt.savefig('static/images/graph/cust_analysis.png')
+    plt.clf()
+
+
+    return render_template("admin_summary.html")
 
 @app.route("/admin_viewProfile/<role>/<id>")
 def admin_viewProfile(role,id):
@@ -608,21 +654,19 @@ def custSummary():
     plt.bar(service_status, service_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
     plt.title('Service Requests Summary')
     plt.ylabel('Number of Requests')
-    plt.savefig('cust_service_requests_summary.png')
+    plt.savefig('static/images/graph/customer/cust_service_requests_summary.png')
     plt.clf()
 
-     #making seactor wise graph
-    sectordata = db.session.query(Service_request.Service.sname,func.count(Service_request.Service.sname).label('count')).group_by(Service_request.Service.sname).filter(Service_request.cust_id==session["id"]).all()
-    sector,prof_count=[],[]
-    for id,count in sectordata:
-        sector.append(id)
-        prof_count.append(int(count))
-    print(sector,prof_count)
-    plt.bar(sector, prof_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
-    plt.title('Services')
+    servdata = db.session.query(Service.sname,func.count(Service_request.s_id).label('count')).join(Service_request, Service.s_id == Service_request.s_id).group_by(Service.sname).all()
+    serv_id,serv_count=[],[]
+    for id,count in servdata:
+        serv_id.append(id)
+        serv_count.append(int(count))
+    plt.bar(serv_id, serv_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Service vs Number of order')
     plt.ylabel('Number of Orders')
-    plt.ylabel('Services')
-    plt.savefig('serv_analysis.png')
+    plt.xlabel('Service name ')
+    plt.savefig('static/images/graph/customer/ServName_analysis.png')
     plt.clf()
 
     
@@ -640,7 +684,7 @@ def custSummary():
     # plt.savefig('rating.png')
     # plt.clf() 
 
-    return "your image is saved successfully"
+    return render_template("customer_summary.html")
 
 @app.route("/customer_search",methods=["GET","POST"])
 def customer_search():
@@ -739,6 +783,71 @@ def professional():
                  .filter(Service_request.prof_id == session["id"]).filter(Service_request.date_of_req != date.today())
                  .all())    
     return render_template("professionals.html",cust_detail_today=cust_detail_today,cust_detail_prev=cust_detail_prev,msg=msg)
+
+@app.route("/profSummary")
+def profSummary():
+    profdata = db.session.query(Service_request.status,func.count(Service_request.status).label('count')).filter(Service_request.prof_id==session["id"]).group_by(Service_request.status).all()
+    service_status,service_count=[],[]
+    for status,count in profdata:
+        service_status.append(status)
+        service_count.append(count)
+    print(service_status,service_count)
+    plt.bar(service_status, service_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Service Requests Summary')
+    plt.ylabel('Number of Requests')
+    plt.savefig('static/images/graph/professional/prof_service_requests_summary.png')
+    plt.clf()
+
+    #making customer wise graph
+    custdata = db.session.query(Customer.cemail,func.count(Service_request.cust_id).label('count')).filter(Service_request.prof_id==session["id"]).join(Service_request, Customer.cust_id == Service_request.cust_id).group_by(Customer.cemail).all()
+    cust_id,cust_count=[],[]
+    for id,count in custdata:
+        cust_id.append(id)
+        cust_count.append(int(count))
+    plt.bar(cust_id, cust_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Customer no. of order')
+    plt.ylabel('Number of Orders')
+    plt.xlabel('ID of Customer')
+    plt.savefig('static/images/graph/professional/cust_analysis.png')
+    plt.clf()
+
+    # Fetch the rating counts, including null values
+    sdata = db.session.query(Service_request.srating, func.count(Service_request.srating).label('count')).filter(Service_request.prof_id==session["id"]).group_by(Service_request.srating).all()
+    service_srating = ['1', '2', '3', '4', '5']
+    service_count = [0] * len(service_srating)  # Start with zero counts for each rating
+    for srating, count in sdata:
+        print(srating, count)
+        if srating is None:
+            pass# Increment the count for 'null'
+        else:
+            idx = int(srating) - 1  # Get the index for ratings 1-5
+            service_count[idx] += count  # Increment the respective rating count
+    print(service_srating, service_count)
+    # Define the colors for each rating
+    colors = ['#66b3ff', '#99ff99', '#ff9999', '#7ec3bf', '#ffcc99', '#cccccc']
+
+    # Plot the data
+    plt.bar(service_srating, service_count, color=colors)
+    plt.title('Service Requests Summary')
+    plt.ylabel('Number of Requests')
+    plt.xlabel('Ratings')
+    plt.xticks(ticks=range(len(service_srating)), labels=service_srating)
+    plt.savefig('static/images/graph/professional/rating_summary.png')
+    plt.clf()
+
+    #making dataewise plots
+    datedata = db.session.query(Service_request.date_of_req,func.count(Service_request.date_of_req).label('count')).filter(Service_request.prof_id==session["id"]).group_by(Service_request.date_of_req).all()
+    date_d,prof_count=[],[]
+    for id,count in datedata:
+        date_d.append(id)
+        prof_count.append(count)
+    plt.bar(date_d, prof_count, color=['#66b3ff', '#99ff99', '#ff9999','#7ec3bf'])
+    plt.title('Professionals no. of order')
+    plt.ylabel('Number of Orders')
+    plt.xlabel('Date')
+    plt.savefig('static/images/graph/professional/date_analysis.png')
+    plt.clf()
+    return render_template("prof_summary.html")
 
 @app.route("/professional_search",methods=["GET","POST"])
 def professional_search():

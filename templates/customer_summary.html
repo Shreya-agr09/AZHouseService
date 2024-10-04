@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Summary</title>
+    <link rel="stylesheet" href="../static/style/nav.css">
+</head>
+<style>
+    .container {
+        width: 100%;
+        /* or any specific width */
+        max-width: 800px;
+        /* Set a maximum width for the container */
+        margin: auto;
+        /* Center the container */
+        text-align: center;
+        /* Center the images if needed */
+    }
+
+    .row {
+        width: 100%;
+        /* Full width for each row */
+        display: flex;
+        /* Use flexbox to align items in a row */
+        justify-content: center;
+        /* Center images within the row */
+        margin-bottom: 10px;
+        /* Space between rows */
+    }
+
+    .image {
+        width: 48%;
+        /* Width of each image */
+        margin: 1%;
+        /* Margin around each image */
+        /* Optional for better presentation */
+        border-radius: 8px;
+        /* Round the corners of images */
+        overflow: hidden;
+        /* Keep images within borders */
+    }
+
+    img {
+        width: 100%;
+        /* Make images responsive */
+        height: auto;
+        /* Maintain aspect ratio */
+    }
+</style>
+<body>
+    <header>
+        <h2>Welcome to Customer</h2>
+        <ul>
+            <a href="/customer">Home</a>
+            <a href="/customer_search">Search</a>
+            <a href="/custSummary">Summary</a>
+            <a href="/logout">Logout</a>
+        </ul>
+        <ul style="width:24%;">
+            <a href="/cust_profile">Profile</a>
+            <a href="transHistory/{{session['id']}}">Transaction History</a>
+        </ul>
+    </header>
+    <h1>Summary</h1>
+    <div class="container">
+        <div class="row">
+            <div class="img"><img src="../static/images/graph/customer/cust_service_requests_summary.png" alt=""></div>
+            <div class="img"><img src='static/images/graph/customer/ServName_analysis.png' alt=""></div>
+        </div>
+    </div>
+</body>
+</html>

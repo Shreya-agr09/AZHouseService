@@ -4,48 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Profile</title>
+     <link rel="stylesheet" href="{{ url_for('static', filename='style/nav.css') }}">
 </head>
+<style>
+    .container{
+        margin:auto;
+        padding:2%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        width:70%;
+        border:2px solid black;
+        border-radius: 1%;
+    }
+    .pcontainer{
+        margin:auto;
+        padding:2%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width:70%;
+        border:2px solid black;
+        border-radius: 1%;
+    }
+    .leftcontainer,.rightcontainer{
+        display: flex;
+        width:50%;
+        flex-direction: column;
+    }
+</style>
 <body>
     <header>
-        <span>Welcome Admin</span>
+        <h2>Welcome Admin</h2>
         <ul>
             <a href="/admin">Home</a>
             <a href="/admin_search">Search</a>
-            <a href="/summary">Summary</a>
-            <a href="/logout">Logout</a>
+            <a href="/admin_summary">Summary</a>
+           
         </ul>
+        <ul style="width:24%;justify-content: end;"><a href="/logout">Logout</a> </ul>
     </header>
-    <h1>Profile Information</h1>
+    <h1 align="center">Profile Information</h1>
     {% if role == "Professional" %}
+    <div class="pcontainer">
+        <div class="leftcontainer">
         <h2>Professional Profile</h2>
         <p>Name: {{ details.pname }}</p>
         <p>Experience: {{ details.pexp }} years</p>
-        <p>Service: {{ details.pserviceName }}</p>
+        <p>Service: {{ details.pserviceName }}</p></div>
+        <div class="right">
         <h3>Reviews</h3>
             {% if reviews %}
                 <ul>
                 {% for review in reviews %}
-                    <li>Rating: {{ review.srating }} - Remarks: {{ review.remarks or 'No remarks' }}</li>
+                    Rating: {{ review.srating }} - Remarks: {{ review.remarks or 'No remarks' }}
                 {% endfor %}
                 </ul>
             {% else %}
-                <p>No reviews found for this professional.</p>
+                <p>No reviews found for this professional.</p></div>
             {% endif %}
-    
+        </div>
         <!-- Add other professional-specific fields here -->
 
     {% elif role == "Customer" %}
+    <div class="container">
         <h2>Customer Profile</h2>
         <p>Name: {{ details.cname }}</p>
         <p>Email: {{ details.cemail }}</p>
-        <p>Address: {{ details.caddress }}</p>
+        <p>Address: {{ details.caddress }}</p></div>
         <!-- Add other customer-specific fields here -->
 
     {% elif role == "Service" %}
+    <div class="container">
         <h2>Service Details</h2>
         <p>Service Name: {{ details.sname }}</p>
         <p>Description: {{ details.sdescription }}</p>
-        <p>Price: {{ details.sbaseprice }}</p>
+        <p>Price: {{ details.sbaseprice }}</p></div>
         <!-- Add other service-specific fields here -->
 
     {% endif %}

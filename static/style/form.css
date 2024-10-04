@@ -121,10 +121,12 @@ a {
     position: relative;
 }
 
-
+.msg p{
+    color:var(--secondary);
+}
 textarea {
-    width: 72%; /* Full width of the container */
-    height: 16%; /* Adjust height as needed */
+    width: 80%; /* Full width of the container */
+    height: 14%; /* Adjust height as needed */
     padding: 10px; /* Padding inside the textarea */
     border: 1px solid #ccc; /* Border color and style */
     border-radius: 4px; /* Rounded corners */

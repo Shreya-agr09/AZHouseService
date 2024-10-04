@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Professional SignUp</title>
-    <link rel="stylesheet" href="../static/form.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/form.css') }}">
     <script>
         // Function to update the base price dynamically based on the service selected
         function updateBasePrice() {
             var serviceSelect = document.getElementById('serviceName');
             var selectedService = serviceSelect.options[serviceSelect.selectedIndex];
             var basePrice = selectedService.getAttribute('data-baseprice');
-            
+
             // Update the price input's placeholder and base price message
             document.getElementById('price').placeholder = "Must be above " + basePrice;
             document.getElementById('basePriceMessage').innerText = "Must be above " + basePrice;
@@ -41,53 +41,68 @@
     <div class="main">
         <div class="left"><img src="../static/images/img1.jpg" alt=""></div>
         <form action="/professional_signUp" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
-        <h1>Service Professional SignUp</h1>
-    
-        <input type="email" name="cemail" placeholder="Email Id(Username)" style="width:40%"/>
-        <input type="text" name="cname" placeholder="Fullname" style="width:40%"/><br>
+            <h1>Service Professional SignUp</h1>
 
-        <input type="password" name="cpassword" placeholder="Password"/><br>
+            <input type="email" name="cemail" placeholder="Email Id(Username)" style="width:40%" />
+            <input type="text" name="cname" placeholder="Fullname" style="width:40%" /><br>
 
+            <div class="password">
+                <input type="password" name="cpassword" placeholder="Password" id="password" required
+                style="width:40%" /><br>
+                <img src="../static/images/closeeye.png" id="eyeicon">
+            </div>
+            
+            <label style="display:inline-block;">Service Name</label>
+            <select name="serviceName" id="serviceName" style="margin:4px;" onchange="updateBasePrice()">
+                {% for service in allServices %}
+                <option value="{{ service.sname }}" data-baseprice="{{ service.sbaseprice }}">
+                    {{ service.sname }}
+                </option>
+                {% endfor %}
+            </select>
+            
+            
+            
+            <label style="display:inline-block;" >Document (PDF)</label>
+            <input type="file" name="document" accept=".pdf" required style="width:20%" /><br>          
+            
+            <textarea name="caddress" placeholder="Address"></textarea><br>
+            
+            <input type="number" name="price" id="price" placeholder="Price" style="width:40%">
+            
+            <!-- <span id="basePriceMessage">Must be above {{ allServices[0].sbaseprice }}</span> -->
+            <!-- <span id="priceError" style="color: red;"></span> Error message displayed here -->
+            <input type="text" name="exp" placeholder="Experience(in years)" style="width:40%" />
+            
+            <input type="text" name="cpincode" placeholder="Pincode" style="width:40%" />
+            
+            <input type="number" name="cphoneNo" placeholder="Phone number" style="width:40%" />
+            
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>
+            {% endif %}
+            {% endwith %}
+            
+            <input type="submit" value="Register">
 
-        <label>Service Name</label>
-        <select name="serviceName" id="serviceName" style="margin:4px;" onchange="updateBasePrice()">
-            {% for service in allServices %}
-            <option value="{{ service.sname }}" data-baseprice="{{ service.sbaseprice }}">
-                {{ service.sname }}
-            </option>
-            {% endfor %}
-        </select>
-
-
-        
-        <label>Document (PDF)</label>
-        <input type="file" name="document" accept=".pdf" required style="width:40%"/><br>
-        
-        
-        
-        <textarea name="caddress" placeholder="Address"></textarea><br>
-
-        <input type="number" name="price" id="price" placeholder="Price" style="width:40%">
-
-        <span id="basePriceMessage">Must be above {{ allServices[0].sbaseprice }}</span>
-        <span id="priceError" style="color: red;"></span> <!-- Error message displayed here -->
-        <input type="text" name="exp" placeholder="Experience(in years)"  style="width:40%"/>
-
-        <input type="text" name="cpincode" placeholder="Pincode"  style="width:40%"/>
-
-        <input type="number" name="cphoneNo" placeholder="Phone number"/><br>
-
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>{% for message in messages %}{{ message }}{% endfor %}</ul>
-        {% endif %}
-        {% endwith %}
-
-        <input type="submit" value="Register"><br>
-
-        <a href="/login">Login Here</a>
-    </form>
-</div>
+            <a href="/login">Login Here</a>
+        </form>
+    </div>
 </body>
+<script>
+    let eyeicon = document.getElementById("eyeicon")
+    let password = document.getElementById("password")
+    eyeicon.onclick = function () {
+        if (password.type == "password") {
+            password.type = "text";
+            eyeicon.src = "../static/images/eye.png";
+        }
+        else {
+            password.type = "password";
+            eyeicon.src = "../static/images/closeeye.png";
+        }
+    }
+</script>
 
 </html>
